@@ -68,17 +68,33 @@
                     <div class="card columns">
                         <div class="card-body">
                             <h5 class="card-title text" title="{{item[1]}}">{{item[1]}}</h5>
-                            <small class="text-muted"><i class="fa fa-clock-o fav" title="Last Updated: {{item[5]}}"></i> {{item[5]}}</small>
+                            <small class="text-muted"><i class="fa fa-clock-o fav" title="Last Updated: {{item[7]}}"></i> {{item[7]}}</small>
+                            <small class="text-muted"><i class="fa fa-clock-o fav" title="Environment: {{item[4]}}"></i> {{item[4]}}</small>
+                            <small class="text-muted"><i class="fa fa-clock-o fav" title="Scan Type: {{item[5]}}"></i> {{item[5]}}</small>
                             <hr>
                             <table class="text-muted" style="width:100%;text-align:center;">
                                 <tbody>
                                     <tr style="font-size:28px;">
-                                        <td style="color:rgb(80, 1, 80)">{{item[6]}}</td>
-                                        <td style="color:green">{{item[7]}}</td>
+                                        <td style="color:rgb(80, 1, 80)">{{item[8]}}</td>
                                     </tr>
                                     <tr style="font-size:9px;">
                                         <td style="color:silver">Total Executions</td>
-                                        <td style="color:silver">Recent Pass %</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="text-muted" style="width:100%;text-align:center;">
+                                <tbody>
+                                    <tr style="font-size:28px;">
+                                        <td style="color:rgb(80, 1, 80)">{{item[9]}}</td>
+                                        <td style="color:green">{{item[10]}}</td>
+                                        <td style="color:green">{{item[11]}}</td>
+                                        <td style="color:green">{{item[12]}}</td>
+                                    </tr>
+                                    <tr style="font-size:9px;">
+                                        <td style="color:silver">Recent High Alerts</td>
+                                        <td style="color:silver">Recent Medium Alerts</td>
+                                        <td style="color:silver">Recent Low Alerts</td>
+                                        <td style="color:silver">Recent Informational Alerts</td>
                                     </tr>
                                 </tbody>
                             </table>
