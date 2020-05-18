@@ -30,7 +30,7 @@ def parse_options():
     general.add_argument(
         '-p', '--password',
         dest='password',
-        default='H$YeZ2*z#pIX',
+        default='passw0rd',
         help="Password of MySQL database"
     )
 
