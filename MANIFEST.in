@@ -1,0 +1,2 @@
+recursive-include owasp_zap_historic/templates *
+include MANIFEST.in
