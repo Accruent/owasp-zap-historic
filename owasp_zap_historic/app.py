@@ -39,7 +39,7 @@ def delete_db(db):
     return redirect(url_for('index'))
 
 
-@app.route('/login',methods=["GET","POST"])
+@app.route('/login',methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
         email = request.form['email']
@@ -47,7 +47,7 @@ def login():
 
         curl = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         use_db(curl, "accounts")
-        curl.execute("SELECT * FROM TB_USERS WHERE email=%s",(email,))
+        curl.execute("SELECT * FROM TB_USERS WHERE email=%s", (email,))
         user = curl.fetchone()
         curl.close()
 

@@ -1,5 +1,6 @@
 import argparse
 
+
 def parse_options():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
@@ -29,7 +30,7 @@ def parse_options():
     general.add_argument(
         '-p', '--password',
         dest='password',
-        default='passw0rd',
+        default='H$YeZ2*z#pIX',
         help="Password of MySQL database"
     )
 
