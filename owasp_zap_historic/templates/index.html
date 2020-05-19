@@ -65,47 +65,58 @@
         <div class="row">
             {% for item in data %}
                 <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
-                    <div class="card columns">
+                    <div class="card columns" style="background-color:silver">
                         <div class="card-body">
                             <h5 class="card-title text" title="{{item[1]}}">{{item[1]}}</h5>
-                            <small class="text-muted"><i class="fa fa-clock-o fav" title="Last Updated: {{item[7]}}"></i> {{item[7]}}</small>
                             <hr>
                             <table class="text-muted" style="width:100%;text-align:center;">
                                 <tbody>
                                     <tr style="font-size:28px;">
-                                        <td style="color:blue">{{item[8]}}</td>
-                                        <td style="color:blue">{{item[4]}}</td>
-                                        <td style="color:blue">{{item[5]}}</td>
+                                        <td style="color:black">{{item[8]}}</td>
+                                        <td style="color:black;font-size:14px">{{item[7].strftime('%b %d %Y at %H:%M:%S')}}</td>
                                     </tr>
                                     <tr style="font-size:9px;">
-                                        <td style="color:silver">Total Executions</td>
-                                        <td style="color:silver">Recent Environment</td>
-                                        <td style="color:silver">Recent Scan Type</td>
+                                        <td style="color:black">Total Executions</td>
+                                        <td style="color:black">Last Updated</td>
                                     </tr>
                                 </tbody>
                             </table>
+                            <hr>
+                            <table class="text-muted" style="width:100%;text-align:center;">
+                                <tbody>
+                                    <tr style="font-size:28px;">
+                                        <td style="color:black">{{item[4]}}</td>
+                                        <td style="color:black">{{item[5]}}</td>
+                                    </tr>
+                                    <tr style="font-size:9px;">
+                                        <td style="color:black">Recent Environment</td>
+                                        <td style="color:black">Recent Scan Type</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <hr>
                             <table class="text-muted" style="width:100%;text-align:center;">
                                 <tbody>
                                     <tr style="font-size:28px;">
                                         <td style="color:red">{{item[9]}}</td>
-                                        <td style="color:yellow">{{item[10]}}</td>
+                                        <td style="color:orange">{{item[10]}}</td>
                                         <td style="color:yellow">{{item[11]}}</td>
-                                        <td style="color:yellow">{{item[12]}}</td>
+                                        <td style="color:black">{{item[12]}}</td>
                                     </tr>
                                     <tr style="font-size:9px;">
-                                        <td style="color:silver">Recent High Alerts</td>
-                                        <td style="color:silver">Recent Medium Alerts</td>
-                                        <td style="color:silver">Recent Low Alerts</td>
-                                        <td style="color:silver">Recent Informational Alerts</td>
+                                        <td style="color:black">Recent High Alerts</td>
+                                        <td style="color:black">Recent Medium Alerts</td>
+                                        <td style="color:black">Recent Low Alerts</td>
+                                        <td style="color:black">Recent Informational Alerts</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="card-footer">
                             {% if session['name'] %}
-                            <a type="button" href="{{item[1]}}/deldbconf" class="btn btn-light float-left btn-sm"><i class="fa fa-trash-o"></i> Delete</a>
+                            <a type="button" href="{{item[1]}}/deldbconf" class="btn btn-light float-left btn-sm" style="background-color:silver"><i class="fa fa-trash-o"></i> Delete</a>
                             {% endif %}
-                            <a type="button" href="{{item[1]}}/dashboard" class="btn btn-light float-right btn-sm"><i class="fa fa-play"></i> View</a>
+                            <a type="button" href="{{item[1]}}/dashboard" class="btn btn-light float-right btn-sm" style="background-color:silver"><i class="fa fa-play"></i> View</a>
                         </div>
                     </div>
                 </div>
