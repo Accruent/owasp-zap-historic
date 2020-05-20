@@ -3,7 +3,7 @@
 
 <head>
     <link href="https://img.icons8.com/cotton/64/000000/time-machine.png" rel="shortcut icon" type="image/x-icon"/>
-    <title>RF Historic - Dashboard</title>
+    <title>OWASP ZAP Historic - Dashboard</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -87,7 +87,7 @@
     </style>
 </head>
 
-<body>
+<body style="background-color:silver">
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -96,55 +96,34 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">RF Historic</a>
+                <a class="navbar-brand" href="/">OWASP ZAP Historic</a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <li class="tablinks active"><a href="./dashboard"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-                    <li class="tablinks"><a href="./ehistoric"><i class="fa fa-history"></i> History</a></li>
-                    <li class="tablinks"><a href="./tmetrics"><i class="fa fa-flask"></i> Metrics</a></li>
-                    <li class="tablinks"><a href="./flaky"><i class="fa fa-bolt"></i> Flaky</a></li>
-                    <li class="tablinks"><a href="./search"><i class="fa fa-search"></i> Search</a></li>
-                    <li class="tablinks"><a href="./compare"><i class="fa fa-sliders"></i> Compare</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-	<script>
-		window.onload = function(){
-            {% for item in last_exe_pie_data %}
-			    createPieChart({{item[0]}},{{item[1]}},'lastPieID','Last Execution Result:');
-            {% endfor %}
 
-            {% for item in last_ten_exe_pie_data %}
-			    createPieChart({{item[0]}},{{item[1]}},'lastTenPieID','Last Execution Result:');
-            {% endfor %}
-
-            {% for item in over_all_exe_pie_data %}
-			    createPieChart({{item[0]}},{{item[1]}},'overAllPieID','Overall Execution Result:');
-            {% endfor %}
-
-            createLastTenExecutionTrendzBarGraph('lastTenExecutionTrendzID');
-
-            createLastTenPerformanceTrendzLineGraph('lastTenPerfExecutionTrendzID');
-		};
-   </script>
-
-    <div class="tabcontent">
+    <div class="tabcontent" style="background-color:silver">
         <div class="d-flex flex-column flex-md-row align-items-center p-1 mb-3 bg-light border-bottom shadow-sm">
-            <h3 class="my-0 mr-md-auto font-weight-normal" >{{db_name}} - Dashboard</h3>
+            <h3 class="my-0 mr-md-auto font-weight-normal">
+				<span style="text-align:left; font-size:45px;"><b>{{db_name}} - Dashboard</b></span>
+				<span style="float:right; font-size:45px;"><b>Total Executions - {{results_data[0][0]}}</b></span>
+			</h3>
         </div>
         <hr>
 
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
+            <ol class="breadcrumb" style="background-color:darkgray">
                 <li class="breadcrumb-item"><a href="#"><b>Execution Statistics:</a></b></li>
             </ol>
         </nav>
 
         <div class="row">
-            <div class="col-md-4 border-right">
-                <span style="font-weight:bold; padding-left:55px;color:gray">Passed Tests:</span>
+            <div class="col-md-3 border-right">
+                <span style="font-weight:bold; padding-left:55px;color:black">High Alerts:</span>
 				<table style="width:100%;height:200px;text-align: center;">
 					<tbody>
 						<tr style="height:60%">
@@ -152,10 +131,12 @@
 								<table style="width:100%">
 									<tbody>
 										<tr style="height:100%">
-											<td style="font-size:60px; color:#2ecc71">{{last_exe_pie_data[0][0]}}</td>
+											<td style="font-size:60px; color:red">{{high_last_exe_data[0][0]}}</td>
+											<td style="font-size:60px; color:red">{{high_last_exe_data[0][1]}}</td>
 										</tr>
 										<tr>
-											<td><span style="color: #999999;font-size:12px">Recent</span></td>
+											<td><span style="color: black;font-size:12px">Recent High Alerts</span></td>
+											<td><span style="color: black;font-size:12px">Recent URLS Affected</span></td>
 										</tr>
 									</tbody>
 								</table>
@@ -169,14 +150,32 @@
 								<table style="width:100%">
 									<tbody>
 										<tr style="height:70%;font-size:25px" align="center" valign="middle">
-											<td style="width: 33%; color:red">{{execution_pass_data[0][1]}}</td>
-											<td style="width: 33%; color:brown">{{execution_pass_data[0][2]}}</td>
-											<td style="width: 33%; color:green">{{execution_pass_data[0][3]}}</td>
+											<td style="width: 33%; color:green">{{high_overall_data[0][0]|int}}</td>
+											<td style="width: 33%; color:brown">{{high_overall_data[0][1]}}</td>
+											<td style="width: 33%; color:red">{{high_overall_data[0][2]|int}}</td>
 										</tr>
 										<tr style="height:30%" align="center" valign="top">
-											<td style="width: 33%"><span style="color: #999999;font-size:10px">Overall: Min</span></td>
-											<td style="width: 33%"><span style="color: #999999;font-size:10px">Average</span></td>
-											<td style="width: 33%"><span style="color: #999999;font-size:10px">Max</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Overall High Alerts: Min</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Average</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Max</span></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr style="height:5%">
+							<td>
+								<table style="width:100%">
+									<tbody>
+										<tr style="height:70%;font-size:25px" align="center" valign="middle">
+											<td style="width: 33%; color:green">{{high_urls_data[0][0]}}</td>
+											<td style="width: 33%; color:brown">{{high_urls_data[0][1]}}</td>
+											<td style="width: 33%; color:red">{{high_urls_data[0][2]}}</td>
+										</tr>
+										<tr style="height:30%" align="center" valign="top">
+											<td style="width: 33%"><span style="color: black;font-size:10px">Overall URLS Affected: Min</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Average</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Max</span></td>
 										</tr>
 									</tbody>
 								</table>
@@ -185,8 +184,8 @@
 					</tbody>
 				</table>
             </div>
-            <div class="col-md-4 borders">
-                <span style="font-weight:bold; padding-left:55px;color:gray">Failed Tests:</span>
+            <div class="col-md-3 borders">
+                <span style="font-weight:bold; padding-left:55px;color:black">Medium Alerts:</span>
 				<table style="width:100%;height:200px;text-align: center;">
 					<tbody>
 						<tr style="height:60%">
@@ -194,10 +193,12 @@
 								<table style="width:100%">
 									<tbody>
 										<tr style="height:100%">
-											<td style="font-size:60px;color:#fc6666">{{last_exe_pie_data[0][1]}}</td>
+											<td style="font-size:60px; color:orange">{{medium_last_exe_data[0][0]}}</td>
+											<td style="font-size:60px; color:orange">{{medium_last_exe_data[0][1]}}</td>
 										</tr>
 										<tr>
-											<td><span style="color: #999999;font-size:12px">Recent</span></td>
+											<td><span style="color: black;font-size:12px">Recent Medium Alerts</span></td>
+											<td><span style="color: black;font-size:12px">Recent URLS Affected</span></td>
 										</tr>
 									</tbody>
 								</table>
@@ -211,14 +212,32 @@
 								<table style="width:100%">
 									<tbody>
 										<tr style="height:70%;font-size:25px" align="center" valign="middle">
-											<td style="width: 33%; color:green">{{execution_fail_data[0][1]}}</td>
-											<td style="width: 33%; color: brown">{{execution_fail_data[0][2]}}</td>
-											<td style="width: 33%; color:red">{{execution_fail_data[0][3]}}</td>
+											<td style="width: 33%; color:green">{{medium_overall_data[0][0]|int}}</td>
+											<td style="width: 33%; color:brown">{{medium_overall_data[0][1]}}</td>
+											<td style="width: 33%; color:red">{{medium_overall_data[0][2]|int}}</td>
 										</tr>
 										<tr style="height:30%" align="center" valign="top">
-											<td style="width: 33%"><span style="color: #999999;font-size:10px">Overall: Min</span></td>
-											<td style="width: 33%"><span style="color: #999999;font-size:10px">Average</span></td>
-											<td style="width: 33%"><span style="color: #999999;font-size:10px">Max</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Overall Medium Alerts: Min</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Average</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Max</span></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr style="height:5%">
+							<td>
+								<table style="width:100%">
+									<tbody>
+										<tr style="height:70%;font-size:25px" align="center" valign="middle">
+											<td style="width: 33%; color:green">{{medium_urls_data[0][0]}}</td>
+											<td style="width: 33%; color:brown">{{medium_urls_data[0][1]}}</td>
+											<td style="width: 33%; color:red">{{medium_urls_data[0][2]}}</td>
+										</tr>
+										<tr style="height:30%" align="center" valign="top">
+											<td style="width: 33%"><span style="color: black;font-size:10px">Overall URLS Affected: Min</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Average</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Max</span></td>
 										</tr>
 									</tbody>
 								</table>
@@ -227,8 +246,8 @@
 					</tbody>
 				</table>
             </div>
-            <div class="col-md-4 border-left">
-                <span style="font-weight:bold; padding-left:55px;color:gray">Execution Time (min):</span>
+            <div class="col-md-3 borders">
+                <span style="font-weight:bold; padding-left:55px;color:black">Low Alerts:</span>
 				<table style="width:100%;height:200px;text-align: center;">
 					<tbody>
 						<tr style="height:60%">
@@ -236,10 +255,12 @@
 								<table style="width:100%">
 									<tbody>
 										<tr style="height:100%">
-											<td style="font-size:60px;color:cadetblue">{{last_exe_pie_data[0][3]}}</td>
+											<td style="font-size:60px; color:#FEB913">{{low_last_exe_data[0][0]}}</td>
+											<td style="font-size:60px; color:#FEB913">{{low_last_exe_data[0][1]}}</td>
 										</tr>
 										<tr>
-											<td><span style="color: #999999;font-size:12px">Recent</span></td>
+											<td><span style="color: black;font-size:12px">Recent Low Alerts</span></td>
+											<td><span style="color: black;font-size:12px">Recent URLS Affected</span></td>
 										</tr>
 									</tbody>
 								</table>
@@ -253,14 +274,94 @@
 								<table style="width:100%">
 									<tbody>
 										<tr style="height:70%;font-size:25px" align="center" valign="middle">
-											<td style="width: 33%;color:green">{{execution_time_data[0][1]}}</td>
-											<td style="width: 33%;color:brown">{{execution_time_data[0][2]}}</td>
-											<td style="width: 33%;color:red">{{execution_time_data[0][3]}}</td>
+											<td style="width: 33%; color:green">{{low_overall_data[0][0]|int}}</td>
+											<td style="width: 33%; color:brown">{{low_overall_data[0][1]}}</td>
+											<td style="width: 33%; color:red">{{low_overall_data[0][2]|int}}</td>
 										</tr>
 										<tr style="height:30%" align="center" valign="top">
-											<td style="width: 33%"><span style="color: #999999;font-size:10px">Overall: Min</span></td>
-											<td style="width: 33%"><span style="color: #999999;font-size:10px">Average</span></td>
-											<td style="width: 33%"><span style="color: #999999;font-size:10px">Max</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Overall Low Alerts: Min</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Average</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Max</span></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr style="height:5%">
+							<td>
+								<table style="width:100%">
+									<tbody>
+										<tr style="height:70%;font-size:25px" align="center" valign="middle">
+											<td style="width: 33%; color:green">{{low_urls_data[0][0]}}</td>
+											<td style="width: 33%; color:brown">{{low_urls_data[0][1]}}</td>
+											<td style="width: 33%; color:red">{{low_urls_data[0][2]}}</td>
+										</tr>
+										<tr style="height:30%" align="center" valign="top">
+											<td style="width: 33%"><span style="color: black;font-size:10px">Overall URLS Affected: Min</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Average</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Max</span></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+            </div>
+            <div class="col-md-3 border-left">
+                <span style="font-weight:bold; padding-left:55px;color:black">Informational Alerts:</span>
+				<table style="width:100%;height:200px;text-align: center;">
+					<tbody>
+						<tr style="height:60%">
+							<td>
+								<table style="width:100%">
+									<tbody>
+										<tr style="height:100%">
+											<td style="font-size:60px; color:black">{{info_last_exe_data[0][0]}}</td>
+											<td style="font-size:60px; color:black">{{info_last_exe_data[0][1]}}</td>
+										</tr>
+										<tr>
+											<td><span style="color: black;font-size:12px">Recent Informational Alerts</span></td>
+											<td><span style="color: black;font-size:12px">Recent URLS Affected</span></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr style="height:35%">
+							<td></td>
+						</tr>
+						<tr style="height:5%">
+							<td>
+								<table style="width:100%">
+									<tbody>
+										<tr style="height:70%;font-size:25px" align="center" valign="middle">
+											<td style="width: 33%; color:green">{{info_overall_data[0][0]|int}}</td>
+											<td style="width: 33%; color:brown">{{info_overall_data[0][1]}}</td>
+											<td style="width: 33%; color:red">{{info_overall_data[0][2]|int}}</td>
+										</tr>
+										<tr style="height:30%" align="center" valign="top">
+											<td style="width: 33%"><span style="color: black;font-size:10px">Overall Informational Alerts: Min</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Average</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Max</span></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr style="height:5%">
+							<td>
+								<table style="width:100%">
+									<tbody>
+										<tr style="height:70%;font-size:25px" align="center" valign="middle">
+											<td style="width: 33%; color:green">{{info_urls_data[0][0]}}</td>
+											<td style="width: 33%; color:brown">{{info_urls_data[0][1]}}</td>
+											<td style="width: 33%; color:red">{{info_urls_data[0][2]}}</td>
+										</tr>
+										<tr style="height:30%" align="center" valign="top">
+											<td style="width: 33%"><span style="color: black;font-size:10px">Overall URLS Affected: Min</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Average</span></td>
+											<td style="width: 33%"><span style="color: black;font-size:10px">Max</span></td>
 										</tr>
 									</tbody>
 								</table>
@@ -271,138 +372,12 @@
             </div>
         </div>
         <hr>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#"><b>Executions Overview:</a></b></li>
-            </ol>
-        </nav>
-        <div class='row'>
-            <div class="col-md-4">
-                <div class="col-md-12">
-                    <span style="font-weight:bold">Last Execution Result:</span>
-                    <div id="lastPieID" style="height:300px;width:auto;"></div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="col-md-12">
-                    <span style="font-weight:bold">Last 10 Execution Results:</span>
-                    <div id="lastTenPieID" style="height:300px;width:auto;"></div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="col-md-12">
-                    <span style="font-weight:bold">Overall Execution Results:</span>
-                    <div id="overAllPieID" style="height:300px;width:auto;"></div>
-                </div>
-            </div>
-        </div>
-        <hr>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#"><b>Executions Trends:</a></b></li>
-            </ol>
-        </nav>
-        <div class='row'>
-            <div class="col-md-12">
-                <div class="col-md-12">
-                    <span style="font-weight:bold">Last 10 Executions Trends:</span>
-                    <div id="lastTenExecutionTrendzID" style="height:300px;width:auto;"></div>
-                </div>
-            </div>
-        </div>
-        <br>
-        <div class='row'>
-            <div class="col-md-12">
-                <div class="col-md-12">
-                    <span style="font-weight:bold">Last 10 Executions Performance Trends:</span>
-                    <div id="lastTenPerfExecutionTrendzID" style="height:300px;width:auto;"></div>
-                </div>
-            </div>
-        </div>
-        <br>
         <div class="row">
                 <p class="text-muted" style="text-align:center;font-size:9px; width: 100%;">
-                    <a href="https://github.com/adiralashiva8/robotframework-historic" target="_blank">robotframework-historic</a>
+                    <a href="https://github.com/Accruent/owasp-zap-historic" target="_blank">owasp-zap-historic</a>
                 </p>
          </div>
     </div>
-
-    <script>
-        function createLastTenExecutionTrendzBarGraph(ChartID){
-            var status = [];
-            status.push(['Execution ID', 'Pass', 'Fail']);
-            {% for item in last_ten_data %}
-                status.push(['EID: '.concat({{item[0]}}),{{item[1]}},{{item[2]}}]);
-            {% endfor %}
-
-            var data = google.visualization.arrayToDataTable(status);
-            var options = {
-                isStacked:true,
-                legend: 'top-right',
-                chartArea: {width: "85%",height: "80%"},
-                bar: {
-                    groupWidth: '90%'
-                },
-                annotations: {
-                    alwaysOutside: true,
-                },
-                vAxis: {title: "No. of test cases"},
-                series: {
-                    0:{color:'#2ecc71'},
-                    1:{color:'#fc6666'}
-                },
-            };
-                // Instantiate and draw the chart.
-                var chart = new google.visualization.ColumnChart(document.getElementById(ChartID));
-                chart.draw(data, options);
-            }
-       </script>
-       <script>
-            function createLastTenPerformanceTrendzLineGraph(ChartID){
-                var status = [];
-                status.push(['Execution ID', 'Time (min)']);
-                {% for item in last_ten_data %}
-                    status.push(['EID: '.concat({{item[0]}}), {{item[3]}}]);
-                {% endfor %}
-
-                var options = {
-                    isStacked:true,
-                    legend:'none',
-                    pointSize: 5,
-					pointShape: { type: 'diamond'},
-                    chartArea: {width: "85%",height: "80%"},
-                    vAxis: {title: "Duration in minutes"},
-
-                    annotations: {
-                        alwaysOutside: true,
-                    },
-                };
-                var data = google.visualization.arrayToDataTable(status);
-
-                    // Instantiate and draw the chart.
-                    var chart = new google.visualization.LineChart(document.getElementById(ChartID));
-                    chart.draw(data, options);
-                }
-    </script>
-
-	<script>
-	  function createPieChart(passed_count,failed_count,ChartID,ChartName){
-			var status = [];
-			status.push(['Status', 'Percentage']);
-			status.push(['PASS',parseInt(passed_count)],['FAIL',parseInt(failed_count)]);
-			var data = google.visualization.arrayToDataTable(status);
-
-			var options = {
-                pieHole: 0.6,
-                chartArea: {width: "95%",height: "80%"},
-                colors: ['#2ecc71', '#fc6666'],
-                legend: 'top',
-			};
-
-			var chart = new google.visualization.PieChart(document.getElementById(ChartID));
-			chart.draw(data, options);
-		}
-	 </script>
 </body>
 
 </html>

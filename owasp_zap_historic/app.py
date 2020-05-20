@@ -26,7 +26,7 @@ def redirect_url():
 
 @app.route('/<db>/deldbconf', methods=['GET'])
 def delete_db_conf(db):
-    return render_template('deldbconf.html', db_name = db)
+    return render_template('deldbconf.html', db_name=db)
 
 
 @app.route('/<db>/delete', methods=['GET'])
@@ -39,7 +39,7 @@ def delete_db(db):
     return redirect(url_for('index'))
 
 
-@app.route('/login',methods=["GET", "POST"])
+@app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
         email = request.form['email']
@@ -57,9 +57,9 @@ def login():
                 session['email'] = user['email']
                 return redirect(url_for('index'))
             else:
-                return redirect("/login" )
+                return redirect("/login")
         else:
-            return redirect("/login" )
+            return redirect("/login")
     else:
         return render_template("login.html")
 
@@ -102,12 +102,17 @@ def add_db():
             # create new database for project
             cursor.execute("Create DATABASE %s;" % db_name)
             # update created database info in robothistoric.TB_PROJECT table
-            cursor.execute("INSERT INTO robothistoric.TB_PROJECT ( Project_Id, Project_Name, Project_Desc, Project_Image, Created_Date, Last_Updated, Total_Executions, Recent_Pass_Perc, Overall_Pass_Perc) VALUES (0, '%s', '%s', '%s', NOW(), NOW(), 0, 0, 0);" % (db_name, db_desc, db_image))
+            cursor.execute(
+                "INSERT INTO robothistoric.TB_PROJECT ( Project_Id, Project_Name, Project_Desc, Project_Image, Created_Date, Last_Updated, Total_Executions, Recent_Pass_Perc, Overall_Pass_Perc) VALUES (0, '%s', '%s', '%s', NOW(), NOW(), 0, 0, 0);" % (
+                db_name, db_desc, db_image))
             # create tables in created database
             use_db(cursor, db_name)
-            cursor.execute("Create table TB_EXECUTION ( Execution_Id INT NOT NULL auto_increment primary key, Execution_Date DATETIME, Execution_Desc TEXT, Execution_Total INT, Execution_Pass INT, Execution_Fail INT, Execution_Time FLOAT, Execution_STotal INT, Execution_SPass INT, Execution_SFail INT);")
-            cursor.execute("Create table TB_SUITE ( Suite_Id INT NOT NULL auto_increment primary key, Execution_Id INT, Suite_Name TEXT, Suite_Status CHAR(4), Suite_Total INT, Suite_Pass INT, Suite_Fail INT, Suite_Time FLOAT);")
-            cursor.execute("Create table TB_TEST ( Test_Id INT NOT NULL auto_increment primary key, Execution_Id INT, Test_Name TEXT, Test_Status CHAR(4), Test_Time FLOAT, Test_Error TEXT, Test_Comment TEXT);")
+            cursor.execute(
+                "Create table TB_EXECUTION ( Execution_Id INT NOT NULL auto_increment primary key, Execution_Date DATETIME, Execution_Desc TEXT, Execution_Total INT, Execution_Pass INT, Execution_Fail INT, Execution_Time FLOAT, Execution_STotal INT, Execution_SPass INT, Execution_SFail INT);")
+            cursor.execute(
+                "Create table TB_SUITE ( Suite_Id INT NOT NULL auto_increment primary key, Execution_Id INT, Suite_Name TEXT, Suite_Status CHAR(4), Suite_Total INT, Suite_Pass INT, Suite_Fail INT, Suite_Time FLOAT);")
+            cursor.execute(
+                "Create table TB_TEST ( Test_Id INT NOT NULL auto_increment primary key, Execution_Id INT, Test_Name TEXT, Test_Status CHAR(4), Test_Time FLOAT, Test_Error TEXT, Test_Comment TEXT);")
             mysql.connection.commit()
         except Exception as e:
             print(str(e))
@@ -117,6 +122,7 @@ def add_db():
     else:
         return render_template('newdb.html')
 
+
 @app.route('/<db>/dashboard', methods=['GET'])
 def dashboard(db):
     cursor = mysql.connection.cursor()
@@ -124,44 +130,127 @@ def dashboard(db):
 
     cursor.execute("SELECT COUNT(Execution_Id) from TB_EXECUTION;")
     results_data = cursor.fetchall()
-    cursor.execute("SELECT COUNT(Suite_Id) from TB_SUITE;")
-    suite_results_data = cursor.fetchall()
-    cursor.execute("SELECT COUNT(Test_Id) from TB_TEST;")
-    test_results_data = cursor.fetchall()
+    cursor.execute("SELECT COUNT(Alert_Id) from TB_ALERTS;")
+    alert_results_data = cursor.fetchall()
 
-    if results_data[0][0] > 0 and suite_results_data[0][0] > 0 and test_results_data[0][0] > 0:
+    if results_data[0][0] > 0 and alert_results_data[0][0] > 0:
 
-        cursor.execute("SELECT Execution_Pass, Execution_Fail, Execution_Total, Execution_Time from TB_EXECUTION order by Execution_Id desc LIMIT 1;")
-        last_exe_pie_data = cursor.fetchall()
+        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected), 0) from tb_alerts where "
+                       "Alert_Level = 'High' and Execution_Id in (select MAX(Execution_Id) from "
+                       "tb_execution);")
+        high_last_exe_data = cursor.fetchall()
 
-        cursor.execute("SELECT SUM(Execution_Pass), SUM(Execution_Fail), SUM(Execution_Total), COUNT(Execution_Id) from (SELECT Execution_Pass, Execution_Fail, Execution_Total, Execution_Id from TB_EXECUTION order by Execution_Id desc LIMIT 10) AS T;")
+        cursor.execute(
+            "select round(min(Alerts)), round(avg(Alerts),2), max(Alerts) from (select High_Alerts "
+            "as Alerts from TB_EXECUTION group by execution_id) as custom;")
+        high_overall_data = cursor.fetchall()
+        print(high_overall_data)
+
+        cursor.execute(
+            "select min(URLS), round(avg(URLS),2), max(URLS) from (select "
+            "Execution_ID, sum(Total) as URLS from (select Execution_Id, sum(URLS_Affected) "
+            "'Total' from tb_alerts where Alert_Level = 'High' group by Execution_Id "
+            "UNION (SELECT Execution_Id,  0 'TOTAL' from tb_alerts)) as custom group by "
+            "Execution_Id) as custom2;")
+        high_urls_data = cursor.fetchall()
+
+        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected), 0) from tb_alerts where "
+                       "Alert_Level = 'Medium' and Execution_Id in (select MAX(Execution_Id) from "
+                       "tb_execution);")
+        medium_last_exe_data = cursor.fetchall()
+
+        cursor.execute(
+            "select round(min(Alerts)), round(avg(Alerts),2), max(Alerts) from "
+            "(select Medium_Alerts as Alerts from TB_EXECUTION group by execution_id)"
+            " as custom;")
+        medium_overall_data = cursor.fetchall()
+
+        cursor.execute(
+            "select min(URLS), round(avg(URLS),2), max(URLS) from (select "
+            "Execution_ID, sum(Total) as URLS from (select Execution_Id, sum(URLS_Affected) "
+            "'Total' from tb_alerts where Alert_Level = 'Medium' group by Execution_Id "
+            "UNION (SELECT Execution_Id,  0 'TOTAL' from tb_alerts)) as custom group by "
+            "Execution_Id) as custom2;")
+        medium_urls_data = cursor.fetchall()
+
+        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected),0) from tb_alerts where "
+                       "Alert_Level = 'Low' and Execution_Id in (select MAX(Execution_Id) from "
+                       "tb_execution);")
+        low_last_exe_data = cursor.fetchall()
+
+        cursor.execute(
+            "select round(min(Alerts)), round(avg(Alerts),2), max(Alerts) from "
+            "(select Low_Alerts as Alerts from TB_EXECUTION group by execution_id)"
+            " as custom;")
+        low_overall_data = cursor.fetchall()
+
+        cursor.execute(
+            "select min(URLS), round(avg(URLS),2), max(URLS) from (select "
+            "Execution_ID, sum(Total) as URLS from (select Execution_Id, sum(URLS_Affected) "
+            "'Total' from tb_alerts where Alert_Level = 'Low' group by Execution_Id "
+            "UNION (SELECT Execution_Id,  0 'TOTAL' from tb_alerts)) as custom group by "
+            "Execution_Id) as custom2;")
+        low_urls_data = cursor.fetchall()
+
+        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected),0) from tb_alerts where "
+                       "Alert_Level = 'Informational' and Execution_Id in (select MAX(Execution_Id)"
+                       " from tb_execution);")
+        info_last_exe_data = cursor.fetchall()
+
+        cursor.execute(
+            "select round(min(Alerts)), round(avg(Alerts),2), max(Alerts) from "
+            "(select Informational_Alerts as Alerts from TB_EXECUTION group by execution_id)"
+            " as custom;")
+        info_overall_data = cursor.fetchall()
+
+        cursor.execute(
+            "select min(URLS), round(avg(URLS),2), max(URLS) from (select "
+            "Execution_ID, sum(Total) as URLS from (select Execution_Id, sum(URLS_Affected) "
+            "'Total' from tb_alerts where Alert_Level = 'Informational' group by Execution_Id "
+            "UNION (SELECT Execution_Id,  0 'TOTAL' from tb_alerts)) as custom group by "
+            "Execution_Id) as custom2;")
+        info_urls_data = cursor.fetchall()
+
+        """
+        cursor.execute(
+            "SELECT SUM(Execution_Pass), SUM(Execution_Fail), SUM(Execution_Total), COUNT(Execution_Id) from (SELECT Execution_Pass, Execution_Fail, Execution_Total, Execution_Id from TB_EXECUTION order by Execution_Id desc LIMIT 10) AS T;")
         last_ten_exe_pie_data = cursor.fetchall()
 
-        cursor.execute("SELECT SUM(Execution_Pass), SUM(Execution_Fail), SUM(Execution_Total), COUNT(Execution_Id) from TB_EXECUTION order by Execution_Id desc;")
+        cursor.execute(
+            "SELECT SUM(Execution_Pass), SUM(Execution_Fail), SUM(Execution_Total), COUNT(Execution_Id) from TB_EXECUTION order by Execution_Id desc;")
         over_all_exe_pie_data = cursor.fetchall()
 
-        cursor.execute("SELECT Execution_Id, Execution_Pass, Execution_Fail, Execution_Time from TB_EXECUTION order by Execution_Id desc LIMIT 10;")
+        cursor.execute(
+            "SELECT Execution_Id, Execution_Pass, Execution_Fail, Execution_Time from TB_EXECUTION order by Execution_Id desc LIMIT 10;")
         last_ten_data = cursor.fetchall()
 
-        cursor.execute("select execution_pass, ROUND(MIN(execution_pass),2), ROUND(AVG(execution_pass),2), ROUND(MAX(execution_pass),2) from TB_EXECUTION order by execution_id desc;")
-        execution_pass_data = cursor.fetchall()
-
-        cursor.execute("select execution_fail, ROUND(MIN(execution_fail),2), ROUND(AVG(execution_fail),2), ROUND(MAX(execution_fail),2) from TB_EXECUTION order by execution_id desc;")
+        cursor.execute(
+            "select execution_fail, ROUND(MIN(execution_fail),2), ROUND(AVG(execution_fail),2), ROUND(MAX(execution_fail),2) from TB_EXECUTION order by execution_id desc;")
         execution_fail_data = cursor.fetchall()
 
-        cursor.execute("select execution_time, ROUND(MIN(execution_time),2), ROUND(AVG(execution_time),2), ROUND(MAX(execution_time),2) from TB_EXECUTION order by execution_id desc;")
+        cursor.execute(
+            "select execution_time, ROUND(MIN(execution_time),2), ROUND(AVG(execution_time),2), ROUND(MAX(execution_time),2) from TB_EXECUTION order by execution_id desc;")
         execution_time_data = cursor.fetchall()
+        """
 
-        return render_template('dashboard.html', last_ten_data=last_ten_data,
-        last_exe_pie_data=last_exe_pie_data,
-        last_ten_exe_pie_data=last_ten_exe_pie_data,
-        over_all_exe_pie_data=over_all_exe_pie_data,
-        execution_pass_data=execution_pass_data,
-        execution_fail_data=execution_fail_data,
-        execution_time_data=execution_time_data,db_name=db)
+        return render_template('dashboard.html', high_last_exe_data=high_last_exe_data,
+                               high_overall_data=high_overall_data,
+                               high_urls_data=high_urls_data,
+                               medium_last_exe_data=medium_last_exe_data,
+                               medium_overall_data=medium_overall_data,
+                               medium_urls_data=medium_urls_data,
+                               low_last_exe_data=low_last_exe_data,
+                               low_overall_data=low_overall_data,
+                               low_urls_data=low_urls_data,
+                               info_last_exe_data=info_last_exe_data,
+                               info_overall_data=info_overall_data,
+                               info_urls_data=info_urls_data,
+                               results_data=results_data,
+                               db_name=db)
 
     else:
         return redirect(url_for('redirect_url'))
+
 
 @app.route('/<db>/ehistoric', methods=['GET'])
 def ehistoric(db):
@@ -171,9 +260,11 @@ def ehistoric(db):
     data = cursor.fetchall()
     return render_template('ehistoric.html', data=data, db_name=db)
 
+
 @app.route('/<db>/deleconf/<eid>', methods=['GET'])
 def delete_eid_conf(db, eid):
-    return render_template('deleconf.html', db_name = db, eid = eid)
+    return render_template('deleconf.html', db_name=db, eid=eid)
+
 
 @app.route('/<db>/edelete/<eid>', methods=['GET'])
 def delete_eid(db, eid):
@@ -192,17 +283,20 @@ def delete_eid(db, eid):
 
     try:
         if data[0][0] > 0:
-            recent_pass_perf = float("{0:.2f}".format((data[0][0]/data[0][1]*100)))
+            recent_pass_perf = float("{0:.2f}".format((data[0][0] / data[0][1] * 100)))
         else:
             recent_pass_perf = 0
     except:
         recent_pass_perf = 0
 
     # update robothistoric project
-    cursor.execute("UPDATE robothistoric.TB_PROJECT SET Total_Executions=%s, Last_Updated=now(), Recent_Pass_Perc=%s WHERE Project_Name='%s';" % (int(exe_data[0][0]), recent_pass_perf, db))
+    cursor.execute(
+        "UPDATE robothistoric.TB_PROJECT SET Total_Executions=%s, Last_Updated=now(), Recent_Pass_Perc=%s WHERE Project_Name='%s';" % (
+        int(exe_data[0][0]), recent_pass_perf, db))
     # commit changes
     mysql.connection.commit()
-    return redirect(url_for('ehistoric', db = db))
+    return redirect(url_for('ehistoric', db=db))
+
 
 @app.route('/<db>/tmetrics', methods=['GET', 'POST'])
 def tmetrics(db):
@@ -222,6 +316,7 @@ def tmetrics(db):
     data = cursor.fetchall()
     return render_template('tmetrics.html', data=data, db_name=db)
 
+
 @app.route('/<db>/metrics/<eid>', methods=['GET'])
 def metrics(db, eid):
     cursor = mysql.connection.cursor()
@@ -238,7 +333,9 @@ def metrics(db, eid):
     # get execution info
     cursor.execute("SELECT * from TB_EXECUTION WHERE Execution_Id=%s;" % eid)
     exe_data = cursor.fetchall()
-    return render_template('metrics.html', suite_data=suite_data, test_data = test_data, project_image= project_image[0][0], exe_data = exe_data)
+    return render_template('metrics.html', suite_data=suite_data, test_data=test_data,
+                           project_image=project_image[0][0], exe_data=exe_data)
+
 
 @app.route('/<db>/tmetrics/<eid>', methods=['GET', 'POST'])
 def eid_tmetrics(db, eid):
@@ -255,6 +352,7 @@ def eid_tmetrics(db, eid):
     data = cursor.fetchall()
     return render_template('eidtmetrics.html', data=data, db_name=db)
 
+
 @app.route('/<db>/failures/<eid>', methods=['GET', 'POST'])
 def eid_failures(db, eid):
     cursor = mysql.connection.cursor()
@@ -270,27 +368,33 @@ def eid_failures(db, eid):
     data = cursor.fetchall()
     return render_template('failures.html', data=data, db_name=db)
 
+
 @app.route('/<db>/search', methods=['GET', 'POST'])
 def search(db):
     if request.method == "POST":
         search = request.form['search']
         cursor = mysql.connection.cursor()
         use_db(cursor, db)
-        cursor.execute("SELECT * from TB_TEST WHERE Test_Name LIKE '%{name}%' OR Test_Status LIKE '%{name}%' OR Execution_Id LIKE '%{name}%' ORDER BY Execution_Id DESC LIMIT 10000;".format(name=search))
+        cursor.execute(
+            "SELECT * from TB_TEST WHERE Test_Name LIKE '%{name}%' OR Test_Status LIKE '%{name}%' OR Execution_Id LIKE '%{name}%' ORDER BY Execution_Id DESC LIMIT 10000;".format(
+                name=search))
         data = cursor.fetchall()
         return render_template('search.html', data=data, db_name=db)
     else:
         return render_template('search.html', db_name=db)
 
+
 @app.route('/<db>/flaky', methods=['GET'])
 def flaky(db):
     cursor = mysql.connection.cursor()
     use_db(cursor, db)
-    cursor.execute("SELECT Execution_Id from ( SELECT Execution_Id from TB_EXECUTION ORDER BY Execution_Id DESC LIMIT 5 ) as tmp ORDER BY Execution_Id ASC LIMIT 1;")
+    cursor.execute(
+        "SELECT Execution_Id from ( SELECT Execution_Id from TB_EXECUTION ORDER BY Execution_Id DESC LIMIT 5 ) as tmp ORDER BY Execution_Id ASC LIMIT 1;")
     last_five = cursor.fetchall()
     cursor.execute("SELECT COUNT(Execution_Id) from TB_EXECUTION;")
     lastID = cursor.fetchall()
-    sql_query = "SELECT Execution_Id, Test_Name, Test_Status from TB_TEST WHERE Execution_Id >= %s ORDER BY Execution_Id DESC;" % (str(last_five[0][0]))
+    sql_query = "SELECT Execution_Id, Test_Name, Test_Status from TB_TEST WHERE Execution_Id >= %s ORDER BY Execution_Id DESC;" % (
+        str(last_five[0][0]))
     one = int(lastID[0][0])
     two = int(lastID[0][0]) - 1
     three = int(lastID[0][0]) - 2
@@ -303,7 +407,9 @@ def flaky(db):
     sorted_data = sort_tests(data)
     # print("==== After Sorted Data ===")
     # print(sorted_data)
-    return render_template('flaky.html', data=sorted_data, db_name=db, build1 = one, build2 = two, build3 = three, build4 = four, build5 = five)
+    return render_template('flaky.html', data=sorted_data, db_name=db, build1=one, build2=two, build3=three,
+                           build4=four, build5=five)
+
 
 @app.route('/<db>/compare', methods=['GET', 'POST'])
 def compare(db):
@@ -313,20 +419,24 @@ def compare(db):
         cursor = mysql.connection.cursor()
         use_db(cursor, db)
         # fetch first eid tets results
-        cursor.execute("SELECT Execution_Id, Test_Name, Test_Status, Test_Time, Test_Error from TB_TEST WHERE Execution_Id=%s;" % eid_one )
+        cursor.execute(
+            "SELECT Execution_Id, Test_Name, Test_Status, Test_Time, Test_Error from TB_TEST WHERE Execution_Id=%s;" % eid_one)
         first_data = cursor.fetchall()
         # fetch second eid test results
-        cursor.execute("SELECT Execution_Id, Test_Name, Test_Status, Test_Time, Test_Error from TB_TEST WHERE Execution_Id=%s;" % eid_two )
+        cursor.execute(
+            "SELECT Execution_Id, Test_Name, Test_Status, Test_Time, Test_Error from TB_TEST WHERE Execution_Id=%s;" % eid_two)
         second_data = cursor.fetchall()
         # combine both tuples
         data = first_data + second_data
         sorted_data = sort_tests(data)
-        return render_template('compare.html', data=sorted_data, db_name=db, fb = eid_one, sb = eid_two)
+        return render_template('compare.html', data=sorted_data, db_name=db, fb=eid_one, sb=eid_two)
     else:
         return render_template('compare.html', db_name=db)
 
+
 def use_db(cursor, db_name):
     cursor.execute("USE %s;" % db_name)
+
 
 def sort_tests(data_list):
     out = {}
@@ -337,15 +447,15 @@ def sort_tests(data_list):
             out[elem[1]] = list(elem)
     return [tuple(values) for values in out.values()]
 
-def main():
 
+def main():
     args = parse_options()
 
     app.config['MYSQL_HOST'] = args.sqlhost
     app.config['MYSQL_PORT'] = int(args.sqlport)
     app.config['MYSQL_USER'] = args.username
     app.config['MYSQL_PASSWORD'] = args.password
-    #This cause issues
+    # This cause issues
     # app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
     app.config['auth_plugin'] = 'mysql_native_password'
 
