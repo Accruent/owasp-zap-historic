@@ -34,7 +34,7 @@ def delete_db(db):
     cursor = mysql.connection.cursor()
     cursor.execute("DROP DATABASE %s;" % db)
     # use_db(cursor, "robothistoric")
-    cursor.execute("DELETE FROM robothistoric.TB_PROJECT WHERE Project_Name='%s';" % db)
+    cursor.execute("DELETE FROM owaspzaphistoric.TB_PROJECT WHERE Project_Name='%s';" % db)
     mysql.connection.commit()
     return redirect(url_for('index'))
 
@@ -103,16 +103,20 @@ def add_db():
             cursor.execute("Create DATABASE %s;" % db_name)
             # update created database info in robothistoric.TB_PROJECT table
             cursor.execute(
-                "INSERT INTO robothistoric.TB_PROJECT ( Project_Id, Project_Name, Project_Desc, Project_Image, Created_Date, Last_Updated, Total_Executions, Recent_Pass_Perc, Overall_Pass_Perc) VALUES (0, '%s', '%s', '%s', NOW(), NOW(), 0, 0, 0);" % (
-                db_name, db_desc, db_image))
+                "INSERT INTO owaspzaphistoric.TB_PROJECT ( Project_Id, Project_Name, Project_Desc, "
+                "Project_Image, Environment, Scan_Type, Created_Date, Last_Updated, "
+                "Total_Executions, Recent_High, Recent_Medium, Recent_Low, Recent_Informational) "
+                "VALUES (0, '%s', '%s', '%s', 0, 0, NOW(), NOW(), 0, 0, 0, 0, 0);" %
+                (db_name, db_desc, db_image))
             # create tables in created database
             use_db(cursor, db_name)
             cursor.execute(
-                "Create table TB_EXECUTION ( Execution_Id INT NOT NULL auto_increment primary key, Execution_Date DATETIME, Execution_Desc TEXT, Execution_Total INT, Execution_Pass INT, Execution_Fail INT, Execution_Time FLOAT, Execution_STotal INT, Execution_SPass INT, Execution_SFail INT);")
+                "Create table TB_EXECUTION ( Execution_Id INT NOT NULL auto_increment primary key, "
+                "Environment TEXT, Scan_Type TEXT, Execution_Date DATETIME, High_Alerts INT, "
+                "Medium_Alerts INT, Low_ALerts INT, Informational_Alerts INT, URL_Link TEXT);")
             cursor.execute(
-                "Create table TB_SUITE ( Suite_Id INT NOT NULL auto_increment primary key, Execution_Id INT, Suite_Name TEXT, Suite_Status CHAR(4), Suite_Total INT, Suite_Pass INT, Suite_Fail INT, Suite_Time FLOAT);")
-            cursor.execute(
-                "Create table TB_TEST ( Test_Id INT NOT NULL auto_increment primary key, Execution_Id INT, Test_Name TEXT, Test_Status CHAR(4), Test_Time FLOAT, Test_Error TEXT, Test_Comment TEXT);")
+                "Create table TB_ALERTS ( Alert_Id INT NOT NULL auto_increment primary key, "
+                "Execution_Id INT, Alert_Level TEXT, Alert_Type TEXT, URLS_Affected INT);")
             mysql.connection.commit()
         except Exception as e:
             print(str(e))
@@ -210,28 +214,6 @@ def dashboard(db):
             "UNION (SELECT Execution_Id,  0 'TOTAL' from tb_alerts)) as custom group by "
             "Execution_Id) as custom2;")
         info_urls_data = cursor.fetchall()
-
-        """
-        cursor.execute(
-            "SELECT SUM(Execution_Pass), SUM(Execution_Fail), SUM(Execution_Total), COUNT(Execution_Id) from (SELECT Execution_Pass, Execution_Fail, Execution_Total, Execution_Id from TB_EXECUTION order by Execution_Id desc LIMIT 10) AS T;")
-        last_ten_exe_pie_data = cursor.fetchall()
-
-        cursor.execute(
-            "SELECT SUM(Execution_Pass), SUM(Execution_Fail), SUM(Execution_Total), COUNT(Execution_Id) from TB_EXECUTION order by Execution_Id desc;")
-        over_all_exe_pie_data = cursor.fetchall()
-
-        cursor.execute(
-            "SELECT Execution_Id, Execution_Pass, Execution_Fail, Execution_Time from TB_EXECUTION order by Execution_Id desc LIMIT 10;")
-        last_ten_data = cursor.fetchall()
-
-        cursor.execute(
-            "select execution_fail, ROUND(MIN(execution_fail),2), ROUND(AVG(execution_fail),2), ROUND(MAX(execution_fail),2) from TB_EXECUTION order by execution_id desc;")
-        execution_fail_data = cursor.fetchall()
-
-        cursor.execute(
-            "select execution_time, ROUND(MIN(execution_time),2), ROUND(AVG(execution_time),2), ROUND(MAX(execution_time),2) from TB_EXECUTION order by execution_id desc;")
-        execution_time_data = cursor.fetchall()
-        """
 
         return render_template('dashboard.html', high_last_exe_data=high_last_exe_data,
                                high_overall_data=high_overall_data,

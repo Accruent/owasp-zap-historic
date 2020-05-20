@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <link href="https://img.icons8.com/cotton/64/000000/time-machine.png" rel="shortcut icon" type="image/x-icon"/>
-    <title>RF Historic - Delete Project</title>
+    <link href="https://img.icons8.com/ios-glyphs/2x/center-direction.png" rel="shortcut icon" type="image/x-icon"/>
+    <title>OWASP ZAP Historic - Delete Project</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -50,6 +50,7 @@
 </head>
 <body>
     <body>
+    {% if session['name'] %}
     <div id="db">
         <div class="container">
             <div id="db-row" class="row justify-content-center align-items-center">
@@ -80,5 +81,6 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </body>
 </html>
