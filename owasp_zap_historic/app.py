@@ -145,9 +145,9 @@ def dashboard(db):
 
     if results_data[0][0] > 0 and alert_results_data[0][0] > 0:
 
-        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected), 0) from tb_alerts where "
+        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected), 0) from TB_ALERTS where "
                        "Alert_Level = 'High' and Execution_Id in (select MAX(Execution_Id) from "
-                       "tb_execution);")
+                       "TB_EXECUTION);")
         high_last_exe_data = cursor.fetchall()
 
         cursor.execute(
@@ -159,14 +159,14 @@ def dashboard(db):
         cursor.execute(
             "select min(URLS), round(avg(URLS),2), max(URLS) from (select "
             "Execution_ID, sum(Total) as URLS from (select Execution_Id, sum(URLS_Affected) "
-            "'Total' from tb_alerts where Alert_Level = 'High' group by Execution_Id "
-            "UNION (SELECT Execution_Id,  0 'TOTAL' from tb_alerts)) as custom group by "
+            "'Total' from TB_ALERTS where Alert_Level = 'High' group by Execution_Id "
+            "UNION (SELECT Execution_Id,  0 'TOTAL' from TB_ALERTS)) as custom group by "
             "Execution_Id) as custom2;")
         high_urls_data = cursor.fetchall()
 
-        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected), 0) from tb_alerts where "
+        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected), 0) from TB_ALERTS where "
                        "Alert_Level = 'Medium' and Execution_Id in (select MAX(Execution_Id) from "
-                       "tb_execution);")
+                       "TB_EXECUTION);")
         medium_last_exe_data = cursor.fetchall()
 
         cursor.execute(
@@ -178,14 +178,14 @@ def dashboard(db):
         cursor.execute(
             "select min(URLS), round(avg(URLS),2), max(URLS) from (select "
             "Execution_ID, sum(Total) as URLS from (select Execution_Id, sum(URLS_Affected) "
-            "'Total' from tb_alerts where Alert_Level = 'Medium' group by Execution_Id "
-            "UNION (SELECT Execution_Id,  0 'TOTAL' from tb_alerts)) as custom group by "
+            "'Total' from TB_ALERTS where Alert_Level = 'Medium' group by Execution_Id "
+            "UNION (SELECT Execution_Id,  0 'TOTAL' from TB_ALERTS)) as custom group by "
             "Execution_Id) as custom2;")
         medium_urls_data = cursor.fetchall()
 
-        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected),0) from tb_alerts where "
+        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected),0) from TB_ALERTS where "
                        "Alert_Level = 'Low' and Execution_Id in (select MAX(Execution_Id) from "
-                       "tb_execution);")
+                       "TB_EXECUTION);")
         low_last_exe_data = cursor.fetchall()
 
         cursor.execute(
@@ -197,14 +197,14 @@ def dashboard(db):
         cursor.execute(
             "select min(URLS), round(avg(URLS),2), max(URLS) from (select "
             "Execution_ID, sum(Total) as URLS from (select Execution_Id, sum(URLS_Affected) "
-            "'Total' from tb_alerts where Alert_Level = 'Low' group by Execution_Id "
-            "UNION (SELECT Execution_Id,  0 'TOTAL' from tb_alerts)) as custom group by "
+            "'Total' from TB_ALERTS where Alert_Level = 'Low' group by Execution_Id "
+            "UNION (SELECT Execution_Id,  0 'TOTAL' from TB_ALERTS)) as custom group by "
             "Execution_Id) as custom2;")
         low_urls_data = cursor.fetchall()
 
-        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected),0) from tb_alerts where "
+        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected),0) from TB_ALERTS where "
                        "Alert_Level = 'Informational' and Execution_Id in (select MAX(Execution_Id)"
-                       " from tb_execution);")
+                       " from TB_EXECUTION);")
         info_last_exe_data = cursor.fetchall()
 
         cursor.execute(
@@ -216,8 +216,8 @@ def dashboard(db):
         cursor.execute(
             "select min(URLS), round(avg(URLS),2), max(URLS) from (select "
             "Execution_ID, sum(Total) as URLS from (select Execution_Id, sum(URLS_Affected) "
-            "'Total' from tb_alerts where Alert_Level = 'Informational' group by Execution_Id "
-            "UNION (SELECT Execution_Id,  0 'TOTAL' from tb_alerts)) as custom group by "
+            "'Total' from TB_ALERTS where Alert_Level = 'Informational' group by Execution_Id "
+            "UNION (SELECT Execution_Id,  0 'TOTAL' from TB_ALERTS)) as custom group by "
             "Execution_Id) as custom2;")
         info_urls_data = cursor.fetchall()
 
