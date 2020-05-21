@@ -1,7 +1,9 @@
+"""This module controls the command line arguments for OWASP ZAP Historic."""
 import argparse
 
 
 def parse_options():
+    """This is the overall command line module for owaspzaphistoric"""
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     general = parser.add_argument_group("General")
