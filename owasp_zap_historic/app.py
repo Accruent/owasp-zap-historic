@@ -62,12 +62,9 @@ def login():
                 session['name'] = user['name']
                 session['email'] = user['email']
                 return redirect(url_for('index'))
-            else:
-                return redirect("/login")
-        else:
             return redirect("/login")
-    else:
-        return render_template("login.html")
+        return redirect("/login")
+    return render_template("login.html")
 
 
 @app.route('/logout', methods=["GET", "POST"])
@@ -132,8 +129,7 @@ def add_db():
 
         finally:
             return redirect(url_for('index'))
-    else:
-        return render_template('newdb.html')
+    return render_template('newdb.html')
 
 
 @app.route('/<db>/dashboard', methods=['GET'])
@@ -240,8 +236,7 @@ def dashboard(db):
                                results_data=results_data,
                                db_name=db)
 
-    else:
-        return redirect(url_for('redirect_url'))
+    return redirect(url_for('redirect_url'))
 
 
 def use_db(cursor, db_name):
