@@ -101,6 +101,10 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <li class="tablinks active"><a href="./dashboard"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                    <li class="tablinks" onclick="executeDataTable()"><a href="./ehistoric"><i class="fa fa-history"></i> History</a></li>
+                    {% if session['name'] %}
+                    <li class="tablinks" onclick="executeDataTable()"><a href="./alerts"><i class="fa fa-bolt"></i> Alerts</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -117,7 +121,7 @@
 
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb" style="background-color:darkgray">
-                <li class="breadcrumb-item"><a href="#"><b>Execution Statistics:</a></b></li>
+                <li class="breadcrumb-item"><a href="#"><b>Execution Statistics:</b></a></li>
             </ol>
         </nav>
 

@@ -239,6 +239,30 @@ def dashboard(db):
     return redirect(url_for('redirect_url'))
 
 
+@app.route('/<db>/ehistoric', methods=['GET'])
+def ehistoric(db):
+    cursor = mysql.connection.cursor()
+    use_db(cursor, db)
+    cursor.execute("SELECT * from TB_EXECUTION order by Execution_Id desc LIMIT 500;")
+    data = cursor.fetchall()
+    return render_template('ehistoric.html', data=data, db_name=db)
+
+
+@app.route('/<db>/alerts/<eid>', methods=['GET'])
+def metrics(db, eid):
+    cursor = mysql.connection.cursor()
+    use_db(cursor, db)
+    # Get testcase results of execution id
+    cursor.execute("SELECT * from TB_ALERTS WHERE Execution_Id=%s;" % eid)
+    alerts_data = cursor.fetchall()
+    # get project image
+    cursor.execute("SELECT Project_Image from owaspzaphistoric.TB_PROJECT WHERE "
+                   "Project_Name='%s';" % db)
+    project_image = cursor.fetchall()
+    return render_template('alerts.html', alerts_data=alerts_data, eid=eid,
+                           project_image=project_image[0][0])
+
+
 def use_db(cursor, db_name):
     """method to switch db"""
     cursor.execute("USE %s;" % db_name)
