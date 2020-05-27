@@ -239,6 +239,84 @@ def dashboard(db):
     return redirect(url_for('redirect_url'))
 
 
+@app.route('/<db>/ehistoric', methods=['GET'])
+def ehistoric(db):
+    """dashboard page"""
+    cursor = mysql.connection.cursor()
+    use_db(cursor, db)
+    cursor.execute("SELECT * from TB_EXECUTION order by Execution_Id desc LIMIT 500;")
+    data = cursor.fetchall()
+    return render_template('ehistoric.html', data=data, db_name=db)
+
+
+@app.route('/<db>/alerts/<eid>', methods=['GET'])
+def metrics(db, eid):
+    """alert breakdown page"""
+    cursor = mysql.connection.cursor()
+    use_db(cursor, db)
+    # Get testcase results of execution id
+    cursor.execute("SELECT * from TB_ALERTS WHERE Execution_Id=%s;" % eid)
+    alerts_data = cursor.fetchall()
+    # get project image
+    cursor.execute("SELECT Project_Image from owaspzaphistoric.TB_PROJECT WHERE "
+                   "Project_Name='%s';" % db)
+    project_image = cursor.fetchall()
+    # get URL Link
+    cursor.execute("SELECT URL_Link from TB_EXECUTION WHERE Execution_Id=%s;" % eid)
+    url_link = cursor.fetchall()
+    return render_template('alerts.html', alerts_data=alerts_data, eid=eid, url_link=url_link,
+                           project_image=project_image[0][0])
+
+
+@app.route('/<db>/allalerts', methods=['GET'])
+def tmetrics(db):
+    """display all alerts for a project"""
+    cursor = mysql.connection.cursor()
+    use_db(cursor, db)
+    # Get all from TB_Alerts for Project
+    cursor.execute("SELECT e.Execution_Id, a.Alert_Id, e.Environment, e.Scan_Type, a.Alert_Level, "
+                   "a.Alert_Type, A.URLS_Affected from TB_EXECUTION e INNER JOIN TB_ALERTS a on "
+                   "a.Execution_ID = e.Execution_Id order by e.Execution_ID DESC, a.Alert_Id ASC;")
+    data = cursor.fetchall()
+    return render_template('allalerts.html', data=data, db_name=db)
+
+
+@app.route('/<db>/deleconf/<eid>', methods=['GET'])
+def delete_eid_conf(db, eid):
+    """confirmation page to delete an execution"""
+    return render_template('deleconf.html', db_name=db, eid=eid)
+
+
+@app.route('/<db>/edelete/<eid>', methods=['GET'])
+def delete_eid(db, eid):
+    """delete page for execution deletion"""
+    cursor = mysql.connection.cursor()
+    use_db(cursor, db)
+    # remove execution from tables: execution, suite, test
+    cursor.execute("DELETE FROM TB_EXECUTION WHERE Execution_Id='%s';" % eid)
+    cursor.execute("DELETE FROM TB_ALERTS WHERE Execution_Id='%s';" % eid)
+    # get latest execution info
+    cursor.execute("SELECT Environment, Scan_Type, High_Alerts, Medium_Alerts, Low_Alerts, "
+                   "Informational_ALerts from TB_EXECUTION ORDER BY Execution_Id DESC LIMIT 1;")
+    data = cursor.fetchall()
+    # get no. of executions
+    cursor.execute("SELECT COUNT(*) from TB_EXECUTION;")
+    exe_data = cursor.fetchall()
+    # handle if only execution for project was just deleted
+    if int(exe_data[0][0]) == 0:
+        data = [[0, 0, 0, 0, 0, 0]]
+    print(data[0])
+    # update robothistoric project
+    cursor.execute("UPDATE owaspzaphistoric.TB_PROJECT SET Total_Executions=%s, Environment='%s', "
+                   "Scan_Type='%s', Last_Updated=now(), Recent_High=%s, Recent_Medium=%s, "
+                   "Recent_Low=%s, Recent_Informational=%s WHERE Project_Name='%s';"
+                   % (int(exe_data[0][0]), data[0][0], data[0][1], data[0][2], data[0][3],
+                      data[0][4], data[0][5], db))
+    # commit changes
+    mysql.connection.commit()
+    return redirect(url_for('ehistoric', db=db))
+
+
 def use_db(cursor, db_name):
     """method to switch db"""
     cursor.execute("USE %s;" % db_name)
