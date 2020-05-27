@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <link href="https://img.icons8.com/ios-glyphs/2x/center-direction.png" rel="shortcut icon" type="image/x-icon"/>
-    <title>OWASP ZAP Historic - History</title>
+    <title>OWASP ZAP Historic - Alerts</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -56,9 +55,9 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <li class="tablinks"><a href="./dashboard"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-                    <li class="tablinks active" onclick="executeDataTable()"><a href="./ehistoric"><i class="fa fa-history"></i> History</a></li>
+                    <li class="tablinks" onclick="executeDataTable()"><a href="./ehistoric"><i class="fa fa-history"></i> History</a></li>
                     {% if session['name'] %}
-                    <li class="tablinks" onclick="executeDataTable()"><a href="./allalerts"><i class="fa fa-bolt"></i> Alerts</a></li>
+                    <li class="tablinks active" onclick="executeDataTable()"><a href="./allalerts"><i class="fa fa-bolt"></i> Alerts</a></li>
                     {% endif %}
                     <li class="tablinks" onclick="executeDataTable()"><a href="https://rfhistoric-qe-tools.accruentsystems.com/" target="_blank"><i class="fa fa-android"></i> RF Historic</a></li>
                     <li class="tablinks" onclick="executeDataTable()"><a href="https://dashboard-qe-tools.accruentsystems.com/" target="_blank"><i class="fa fa-asterisk"></i> QE Dashboard</a></li>
@@ -66,54 +65,40 @@
             </div>
         </div>
     </nav>
-
+    {% if session['name'] %}
     <div class="tabcontent">
         <div class="d-flex flex-column flex-md-row align-items-center p-1 mb-3 bg-light border-bottom shadow-sm">
-            <h3 class="my-0 mr-md-auto font-weight-normal" >{{db_name}} - Recent Executions</h3>
+            <h3 class="my-0 mr-md-auto font-weight-normal">All Alerts for {{db_name}}</h3>
         </div>
         <hr>
-        <table class="table table-striped" id="ehist">
+        <table class="table table-striped" id="alerts">
             <thead>
                 <tr>
-                    <th>EID</th>
+                    <th>Execution ID</th>
+                    <th>Alert ID</th>
                     <th>Environment</th>
                     <th>Scan Type</th>
-                    <th>Execution Date</th>
-                    <th>High Alerts</th>
-                    <th>Medium Alerts</th>
-                    <th>Low Alerts</th>
-                    <th>Informational Alerts</th>
-                    <th>ZAP Report Link</th>
-                    <th>Alerts | Delete</th>
+                    <th>Alert Level</th>
+                    <th>Alert Type</th>
+                    <th>URLs Affected</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in data %}
                     <tr>
-                        {% if session['name'] %}
-                        <td title="Click to view {{item[0]}} execution info"><a href="./alerts/{{item[0]}}" target="_blank">{{item[0]}}</a></td>
-                        {% else %}
                         <td> {{item[0]}}</td>
-                        {% endif %}
                         <td> {{item[1]}}</td>
                         <td> {{item[2]}}</td>
                         <td> {{item[3]}}</td>
                         <td> {{item[4]}}</td>
                         <td> {{item[5]}}</td>
                         <td> {{item[6]}}</td>
-                        <td> {{item[7]}}</td>
-                        {% if session['name'] %}
-                        <td style="color: green"> <a href="{{item[8]}}" target="_blank">View</a></td>
-                        <td> <a href="./alerts/{{item[0]}}" target="_blank"> View</a> |<a href="./deleconf/{{item[0]}}"> Delete</a></td>
-                        {% else %}
-                        <td style="color: green"> <a href="../login">Login to see ZAP Report</a></td>
-                        <td style="color: green"> <a href="../login">Login to view alerts and delete executions</a></td>
-                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    {% endif %}
     <div class="row">
             <p class="text-muted" style="text-align:center;font-size:9px; width: 100%;">
                 <a href="https://github.com/Accruent/owasp-zap-historic" target="_blank">owasp-zap-historic</a>
@@ -121,11 +106,10 @@
     </div>
     <script>
         function executeDataTable() {
-            var fileTitle = "ExecutionHistoric";
-            $('#ehist').DataTable(
+            var fileTitle = "TestMetrics";
+            $('#alerts').DataTable(
                 {
                     retrieve: true,
-                    "order": [[ 0, "desc" ]],
                     dom: 'l<".margin" B>frtip',
                     buttons: [
                          {
@@ -133,7 +117,7 @@
 							text:      '<i class="fa fa-files-o"></i>',
 							titleAttr: 'Copy',
 							exportOptions: {
-								columns: ':visible:not(:last-child)'
+								columns: ':visible'
 							}
 						},
                         {
@@ -144,7 +128,7 @@
                                 return fileTitle + '-' + new Date().toLocaleString();
                             },
 							exportOptions: {
-								columns: ':visible:not(:last-child)'
+								columns: ':visible'
 							}
                         },
                         {
@@ -155,7 +139,7 @@
                                 return fileTitle + '-' + new Date().toLocaleString();
                             },
 							exportOptions: {
-								columns: ':visible:not(:last-child)'
+								columns: ':visible'
 							}
                         },
                         {
@@ -163,7 +147,7 @@
 							text:      '<i class="fa fa-print"></i>',
 							titleAttr: 'Print',
 							exportOptions: {
-								columns: ':visible:not(:last-child)',
+								columns: ':visible',
                                 alignment: 'left',
 							}
                         },
@@ -173,7 +157,7 @@
 							text:      '<i class="fa fa-low-vision"></i>',
 							titleAttr: 'Hide Column',
 							exportOptions: {
-								columns: ':visible:not(:last-child)'
+								columns: ':visible'
 							},
 							postfixButtons: [ 'colvisRestore' ]
                         },
@@ -183,7 +167,7 @@
 					} ]
 			   }
             );
-        }
+          }
     </script>
 </body>
 
