@@ -103,7 +103,7 @@
                         <td> {{item[6]}}</td>
                         <td> {{item[7]}}</td>
                         {% if session['name'] %}
-                        <td style="color: green"> <a href="{{item[8]}}" target="_blank">View</a></td>
+                        <td style="color: green"> <a href="{{item[8]}}" target="_blank" rel="noopener noreferrer">View</a></td>
                         <td> <a href="./alerts/{{item[0]}}" target="_blank"> View</a> |<a href="./deleconf/{{item[0]}}"> Delete</a></td>
                         {% else %}
                         <td style="color: green"> <a href="../login">Login to see ZAP Report</a></td>
