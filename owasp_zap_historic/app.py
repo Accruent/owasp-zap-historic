@@ -275,7 +275,7 @@ def tmetrics(db):
     use_db(cursor, db)
     # Get all from TB_Alerts for Project
     cursor.execute("SELECT e.Execution_Id, a.Alert_Id, e.Environment, e.Scan_Type, a.Alert_Level, "
-                   "a.Alert_Type, A.URLS_Affected from TB_EXECUTION e INNER JOIN TB_ALERTS a on "
+                   "a.Alert_Type, a.URLS_Affected from TB_EXECUTION e INNER JOIN TB_ALERTS a on "
                    "a.Execution_ID = e.Execution_Id order by e.Execution_ID DESC, a.Alert_Id ASC;")
     data = cursor.fetchall()
     return render_template('allalerts.html', data=data, db_name=db)
