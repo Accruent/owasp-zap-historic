@@ -57,7 +57,14 @@
 
     <div class="tabcontent">
         <div class="d-flex flex-column flex-md-row align-items-center p-1 mb-3 bg-light border-bottom shadow-sm">
-            <h3 class="my-0 mr-md-auto font-weight-normal" >Alert Breakdown for {{db_name}} - {{eid}}</h3>
+            <h3 class="my-0 mr-md-auto font-weight-normal">
+				<span style="text-align:left; font-size:36px;"><b>Alert Breakdown for Execution {{eid}}</b></span>
+				<span style="float:right; font-size:36px;">
+                    <b>Full Report -
+                        <a href="{{url_link[0][0]}}" target="_blank">View</a>
+                    </b>
+                </span>
+			</h3>
         </div>
         <hr>
         <table class="table table-striped" id="alerts">

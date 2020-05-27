@@ -259,7 +259,10 @@ def metrics(db, eid):
     cursor.execute("SELECT Project_Image from owaspzaphistoric.TB_PROJECT WHERE "
                    "Project_Name='%s';" % db)
     project_image = cursor.fetchall()
-    return render_template('alerts.html', alerts_data=alerts_data, eid=eid,
+    # get URL Link
+    cursor.execute("SELECT URL_Link from TB_EXECUTION WHERE Execution_Id=%s;" % eid)
+    url_link = cursor.fetchall()
+    return render_template('alerts.html', alerts_data=alerts_data, eid=eid, url_link=url_link,
                            project_image=project_image[0][0])
 
 
