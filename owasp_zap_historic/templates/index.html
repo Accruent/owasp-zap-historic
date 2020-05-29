@@ -84,6 +84,21 @@
                                 </tbody>
                             </table>
                             <hr>
+                            <table class="text-muted" style="height:50px;width:100%;text-align:center;">
+                                <tbody>
+                                    {% set font_size = 400 / item[13] | length  %}
+                                    {% if font_size > 30 %}
+                                        {% set font_size = 30 %}
+                                    {% endif %}
+                                    <tr style="font-size:{{font_size}};">
+                                        <td style="color:black">{{item[13]}}</td>
+                                    </tr>
+                                    <tr style="font-size:9px;">
+                                        <td style="color:black">Recent Product Version</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <hr>
                             <table class="text-muted" style="width:100%;text-align:center;">
                                 <tbody>
                                     <tr style="font-size:28px;">

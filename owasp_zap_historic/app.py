@@ -13,8 +13,7 @@ mysql = MySQL(app)
 @app.route('/', methods=['GET'])
 def index():
     """render index.html page"""
-    cursor = mysql.connection.cursor()
-    use_db(cursor, "owaspzaphistoric")
+    cursor = use_db("owaspzaphistoric")
     cursor.execute("select * from TB_PROJECT ORDER BY Project_Name ASC;")
     data = cursor.fetchall()
     return render_template('index.html', data=data)
@@ -37,7 +36,6 @@ def delete_db(db):
     """Actual deletion of project"""
     cursor = mysql.connection.cursor()
     cursor.execute("DROP DATABASE %s;" % db)
-    # use_db(cursor, "robothistoric")
     cursor.execute("DELETE FROM owaspzaphistoric.TB_PROJECT WHERE Project_Name='%s';" % db)
     mysql.connection.commit()
     return redirect(url_for('index'))
@@ -49,9 +47,7 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password'].encode('utf-8')
-
-        curl = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        use_db(curl, "accounts")
+        curl = use_db("accounts", True)
         curl.execute("SELECT * FROM TB_USERS WHERE email=%s", (email,))
         user = curl.fetchone()
         curl.close()
@@ -84,9 +80,7 @@ def register():
         email = request.form['email']
         password = request.form['password'].encode('utf-8')
         hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
-
-        cur = mysql.connection.cursor()
-        use_db(cur, "accounts")
+        cur = use_db("accounts", True)
         cur.execute("INSERT INTO TB_USERS (name, email, password) VALUES (%s,%s,%s)",
                     (name, email, hash_password,))
         mysql.connection.commit()
@@ -115,7 +109,7 @@ def add_db():
                 "VALUES (0, '%s', '%s', '%s', 0, 0, NOW(), NOW(), 0, 0, 0, 0, 0);" %
                 (db_name, db_desc, db_image))
             # create tables in created database
-            use_db(cursor, db_name)
+            cursor = use_db(db_name)
             cursor.execute(
                 "Create table TB_EXECUTION ( Execution_Id INT NOT NULL auto_increment primary key, "
                 "Environment TEXT, Scan_Type TEXT, Execution_Date DATETIME, High_Alerts INT, "
@@ -135,8 +129,7 @@ def add_db():
 @app.route('/<db>/dashboard', methods=['GET'])
 def dashboard(db):
     """Project dashboard page"""
-    cursor = mysql.connection.cursor()
-    use_db(cursor, db)
+    cursor = use_db(db)
 
     cursor.execute("SELECT COUNT(Execution_Id) from TB_EXECUTION;")
     results_data = cursor.fetchall()
@@ -154,7 +147,6 @@ def dashboard(db):
             "select round(min(Alerts)), round(avg(Alerts),2), max(Alerts) from (select High_Alerts "
             "as Alerts from TB_EXECUTION group by execution_id) as custom;")
         high_overall_data = cursor.fetchall()
-        print(high_overall_data)
 
         cursor.execute(
             "select min(URLS), round(avg(URLS),2), max(URLS) from (select "
@@ -242,8 +234,7 @@ def dashboard(db):
 @app.route('/<db>/ehistoric', methods=['GET'])
 def ehistoric(db):
     """dashboard page"""
-    cursor = mysql.connection.cursor()
-    use_db(cursor, db)
+    cursor = use_db(db)
     cursor.execute("SELECT * from TB_EXECUTION order by Execution_Id desc LIMIT 500;")
     data = cursor.fetchall()
     return render_template('ehistoric.html', data=data, db_name=db)
@@ -252,8 +243,7 @@ def ehistoric(db):
 @app.route('/<db>/alerts/<eid>', methods=['GET'])
 def metrics(db, eid):
     """alert breakdown page"""
-    cursor = mysql.connection.cursor()
-    use_db(cursor, db)
+    cursor = use_db(db)
     # Get testcase results of execution id
     cursor.execute("SELECT * from TB_ALERTS WHERE Execution_Id=%s;" % eid)
     alerts_data = cursor.fetchall()
@@ -271,12 +261,12 @@ def metrics(db, eid):
 @app.route('/<db>/allalerts', methods=['GET'])
 def tmetrics(db):
     """display all alerts for a project"""
-    cursor = mysql.connection.cursor()
-    use_db(cursor, db)
+    cursor = use_db(db)
     # Get all from TB_Alerts for Project
     cursor.execute("SELECT e.Execution_Id, a.Alert_Id, e.Environment, e.Scan_Type, a.Alert_Level, "
-                   "a.Alert_Type, a.URLS_Affected from TB_EXECUTION e INNER JOIN TB_ALERTS a on "
-                   "a.Execution_ID = e.Execution_Id order by e.Execution_ID DESC, a.Alert_Id ASC;")
+                   "a.Alert_Type, a.URLS_Affected, e.Version from TB_EXECUTION e INNER JOIN "
+                   "TB_ALERTS a on a.Execution_ID = e.Execution_Id order by e.Execution_ID DESC, "
+                   "a.Alert_Id ASC;")
     data = cursor.fetchall()
     return render_template('allalerts.html', data=data, db_name=db)
 
@@ -290,8 +280,7 @@ def delete_eid_conf(db, eid):
 @app.route('/<db>/edelete/<eid>', methods=['GET'])
 def delete_eid(db, eid):
     """delete page for execution deletion"""
-    cursor = mysql.connection.cursor()
-    use_db(cursor, db)
+    cursor = use_db(db)
     # remove execution from tables: execution, suite, test
     cursor.execute("DELETE FROM TB_EXECUTION WHERE Execution_Id='%s';" % eid)
     cursor.execute("DELETE FROM TB_ALERTS WHERE Execution_Id='%s';" % eid)
@@ -317,9 +306,14 @@ def delete_eid(db, eid):
     return redirect(url_for('ehistoric', db=db))
 
 
-def use_db(cursor, db_name):
+def use_db(db_name, use_dict=False):
     """method to switch db"""
+    if use_dict:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    else:
+        cursor = mysql.connection.cursor()
     cursor.execute("USE %s;" % db_name)
+    return cursor
 
 
 def sort_tests(data_list):
