@@ -67,9 +67,8 @@
                 <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
                     <div class="card columns" style="background-color:silver">
                         <div class="card-body">
-                            <h5 class="card-title text" title="{{item[1]}}">{{item[1]}}
-                                <a><img src="{{item[3]}}" style="height:48px;width:96px;float:right;"></a>
-                            </h5>
+                            <h3 style="text-align:center;;font-size:16;"><b>{{item[1]}}</b></h3>
+                            <a><img src="{{item[3]}}" style="height:96px;width:220px;"></a>
                             <hr>
                             <table class="text-muted" style="width:100%;text-align:center;">
                                 <tbody>
@@ -84,34 +83,10 @@
                                 </tbody>
                             </table>
                             <hr>
-                            <table class="text-muted" style="height:50px;width:100%;text-align:center;">
-                                <tbody>
-                                    {% set font_size = 400 / item[13] | length  %}
-                                    {% if font_size > 30 %}
-                                        {% set font_size = 30 %}
-                                    {% endif %}
-                                    <tr style="font-size:{{font_size}};">
-                                        <td style="color:black">{{item[13]}}</td>
-                                    </tr>
-                                    <tr style="font-size:9px;">
-                                        <td style="color:black">Recent Product Version</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <hr>
-                            <table class="text-muted" style="width:100%;text-align:center;">
-                                <tbody>
-                                    <tr style="font-size:28px;">
-                                        <td style="color:black">{{item[4]}}</td>
-                                        <td style="color:black">{{item[5]}}</td>
-                                    </tr>
-                                    <tr style="font-size:9px;">
-                                        <td style="color:black">Recent Environment</td>
-                                        <td style="color:black">Recent Scan Type</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <hr>
+                            <h3 style="text-align:center;;font-size:16;"><b>Recent Execution Info</b></h3>
+                            <h4 style="text-align:left;font-size:10;">Version: {{item[13]|truncate(40,true) }}</h4>
+                            <h4 style="text-align:left;font-size:10;">Environment: {{item[4]|truncate(35,true) }}</h4>
+                            <h4 style="text-align:left;font-size:10;">Scan Type: {{item[5]|truncate(20,true) }}</h4>
                             <table class="text-muted" style="width:100%;text-align:center;">
                                 <tbody>
                                     <tr style="font-size:28px;">
@@ -121,10 +96,10 @@
                                         <td style="color:black">{{item[12]}}</td>
                                     </tr>
                                     <tr style="font-size:9px;">
-                                        <td style="color:black">Recent High Alerts</td>
-                                        <td style="color:black">Recent Medium Alerts</td>
-                                        <td style="color:black">Recent Low Alerts</td>
-                                        <td style="color:black">Recent Informational Alerts</td>
+                                        <td style="color:black">High Alerts</td>
+                                        <td style="color:black">Medium Alerts</td>
+                                        <td style="color:black">Low Alerts</td>
+                                        <td style="color:black">Informational Alerts</td>
                                     </tr>
                                 </tbody>
                             </table>
