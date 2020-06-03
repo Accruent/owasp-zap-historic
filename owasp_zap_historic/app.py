@@ -14,7 +14,8 @@ mysql = MySQL(app)
 def index():
     """render index.html page"""
     cursor = use_db("owaspzaphistoric")
-    cursor.execute("select * from TB_PROJECT ORDER BY Project_Name ASC;")
+    cursor.execute("select *, UPPER(LEFT(Environment, 35)) from TB_PROJECT ORDER BY Project_Name "
+                   "ASC;")
     data = cursor.fetchall()
     return render_template('index.html', data=data)
 
