@@ -5,10 +5,12 @@ import datetime
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL, MySQLdb
 import bcrypt
+import pytz
 from .args import parse_options
 
 app = Flask(__name__, template_folder='templates')
 mysql = MySQL(app)
+CENTRAL = pytz.timezone('US/Central')
 
 
 @app.route('/', methods=['GET'])
@@ -18,15 +20,7 @@ def index():
     cursor.execute("select *, UPPER(LEFT(Environment, 35)) from TB_PROJECT ORDER BY Project_Name "
                    "ASC;")
     data = cursor.fetchall()
-    new_list = []
-    for item in data:
-        item_list = list(item)
-        this_date = item_list[7]
-        this_date = this_date.replace(tzinfo=datetime.timezone.utc)
-        conv_date = this_date.astimezone()
-        item_list[7] = conv_date
-        new_list.append(tuple(item_list))
-    data = new_list
+    data = convert_utc_to_cst(data)
     return render_template('index.html', data=data)
 
 
@@ -249,6 +243,7 @@ def ehistoric(db):
     cursor = use_db(db)
     cursor.execute("SELECT * from TB_EXECUTION order by Execution_Id desc LIMIT 500;")
     data = cursor.fetchall()
+    data = convert_utc_to_cst(data)
     return render_template('ehistoric.html', data=data, db_name=db)
 
 
@@ -337,6 +332,23 @@ def sort_tests(data_list):
         except KeyError:
             out[elem[1]] = list(elem)
     return [tuple(values) for values in out.values()]
+
+
+def convert_utc_to_cst(items):
+    """This method takes a list of tuples and converts any datetime to CST."""
+    new_list = []
+    for item in items:
+        item_list = list(item)
+        this_list = []
+        for itemb in item_list:
+            if isinstance(itemb, datetime.datetime):
+                itemb = itemb.replace(tzinfo=datetime.timezone.utc)
+                conv_date = itemb.astimezone(CENTRAL)
+                this_list.append(conv_date)
+            else:
+                this_list.append(itemb)
+        new_list.append(tuple(this_list))
+    return new_list
 
 
 def main():
