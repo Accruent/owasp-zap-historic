@@ -1,6 +1,7 @@
 """Main module for OWASP ZAP Historic application."""
 import random
 import string
+import datetime
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL, MySQLdb
 import bcrypt
@@ -17,6 +18,15 @@ def index():
     cursor.execute("select *, UPPER(LEFT(Environment, 35)) from TB_PROJECT ORDER BY Project_Name "
                    "ASC;")
     data = cursor.fetchall()
+    new_list = []
+    for item in data:
+        item_list = list(item)
+        this_date = item_list[7]
+        this_date = this_date.replace(tzinfo=datetime.timezone.utc)
+        conv_date = this_date.astimezone()
+        item_list[7] = conv_date
+        new_list.append(tuple(item_list))
+    data = new_list
     return render_template('index.html', data=data)
 
 
