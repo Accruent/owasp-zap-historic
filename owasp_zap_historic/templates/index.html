@@ -15,8 +15,8 @@
         body {
             font-family: 'Source Sans Pro', sans-serif;
             font-weight: 300;
-            background: -moz-linear-gradient(right,  #507ba3 0%, #53e3a6 100%);
-            background: -webkit-gradient(linear, right top, left top, from(#50a3a2), to(#53e3a6));
+            background: -moz-linear-gradient(right,  #04455D 0%, #38113D 100%);
+            background: -webkit-gradient(linear, right top, left top, from(#04455D), to(#38113D));
             color: rgb(22, 0, 0);
         }
 
@@ -74,7 +74,7 @@
                                 <tbody>
                                     <tr style="font-size:28px;">
                                         <td style="color:black">{{item[8]}}</td>
-                                        <td style="color:black;font-size:14px">{{item[7].strftime('%b %d %Y at %H:%M:%S')}}</td>
+                                        <td style="color:black;font-size:14px">{{item[7].strftime('%b %d %Y')}}</br>at {{item[7].strftime('%I:%M %p')}}</td>
                                     </tr>
                                     <tr style="font-size:9px;">
                                         <td style="color:black">Total Executions</td>
