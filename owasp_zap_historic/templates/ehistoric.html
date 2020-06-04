@@ -22,9 +22,18 @@
     <style>
         .tabcontent {
             padding: 60px 12px;
+            background-color:silver;
         }
         .dt-buttons {
             margin-left: 5px;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 300;
+            background: -moz-linear-gradient(right,  #04455D 0%, #38113D 100%);
+            background: -webkit-gradient(linear, right top, left top, from(#04455D), to(#38113D));
+            color: rgb(22, 0, 0);
         }
 
         .tablinks .active {
@@ -34,10 +43,20 @@
         th, td{
             text-align:center;
         }
+        .footer {
+            position: relative;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: transparent;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
     </style>
 </head>
 
-<body style="background-color:silver">
+<body>
     <script>
         window.onload = function(){
             executeDataTable();
@@ -116,11 +135,9 @@
             </tbody>
         </table>
     </div>
-    <div class="row">
-            <p class="text-muted" style="text-align:center;font-size:9px; width: 100%;">
-                <a href="https://github.com/Accruent/owasp-zap-historic" target="_blank">owasp-zap-historic</a>
-            </p>
-    </div>
+	<div class="footer">
+	    <a href="https://github.com/Accruent/owasp-zap-historic" target="_blank"">owasp-zap-historic</a>
+	</div>
     <script>
         function executeDataTable() {
             var fileTitle = "ExecutionHistoric";
