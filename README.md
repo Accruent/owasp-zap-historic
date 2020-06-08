@@ -128,5 +128,28 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
     - Login to OZH
     - Click the *New Project* button
     - Enter a valid name for the project (it must meet __MySQL__ db naming standards
-
     
+- __Step 3:__ Push data to OZH using owasp_zap_historic.py and owasp_zap_historic.bat
+    - These were built with processing from Jenkins in mind. At Accruent, the OWASP ZAP job can be ran as a standalone job or as a child job. In Jenkins, the parameters that OZH needs are defaulted for the standalone job (environment, version)
+    - The parameters that owasp_zap_historic.py expects from the CMD / bat file are:
+      - FILENAME: the complete filepath of the report.html file that is produced by ZAP
+      - PROJECT_NAME: the name of the project that was created in step 2
+      - THIS_ENV: the environment/instance name that ZAP ran on
+      - SCAN_TYPE: At Accruent, we define this as ACTIVE if an active ZAP scan was ran, PASSIVE if no active scan was ran.
+      - URL_LINK: If Jenkins or some other means is used to publish the ZAP report, pass the URL in here and the user will be able to directly access it via OZH.
+      - OZH_HOST: MySQL host name/ip
+      - OZH_PORT: MySQL port
+      - OZH_USERNAME: MySQL username for OZH Application
+      - OZH_PASSWORD: MySQL password for OZH_USERNAME
+      - VERSION: Version of the application that ZAP ran against.
+    - In order to not store the production username/password in the repo, localhost entries are referenced in the repo. These can be hidden in the .bat file.
+    - Example call from Jenkins:
+    ```
+    email_body = bat returnStdout: true, script: """@cmd /c c://Jenkins/Scripts/owasp_zap_historic.bat "${html_file}" ${tag} ${targetURL.toUpperCase()} ${scan_type.toUpperCase()} "${url_link}" "${version}" """
+    ```
+    - This returns the delta email body back to the email_body variable in Jenkins, which then emails the report to a recipient list.
+    - Here is the basic process for owasp_zap_historic.py:
+      - The ZAP file is scraped for alerts
+      - The data is pushed to the *TB_EXECUTION* and *TB_ALERTS* tables in MySQL in the project's db
+      - The row for the project in *owaspzaphistoric.TB_PROJECT* is updated with recent data to display on the landing page
+      - It looks for a previous row in *TB_EXECUTION* to compare results to and produces a delta report
