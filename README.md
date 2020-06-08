@@ -49,12 +49,17 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
 
  - __Step 2:__ Install owasp-zap-historic
  
-    > Case 1: Using setup.py (root)
+    > Case 1: Using pip install
+    ```
+    pip install owasp-zap-historic
+    ```
+ 
+    > Case 2: Using setup.py (root)
     ```
     python setup.py install
     ```
     
-    > Case 2: Using git (latest changes)
+    > Case 3: Using git (latest changes)
     ```
     pip install git+https://github.com/Accruent/owasp-zap-historic.git
     ```
