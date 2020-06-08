@@ -15,7 +15,7 @@ setup(
       author='Neil Howell',
       author_email='neiljhowell@gmail.com',
       url='https://github.com/Accruent/owasp-zap-historic',
-      license='',
+      license='GPL-3.0',
 
       packages=find_packages(),
       include_package_data=True,
