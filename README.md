@@ -5,7 +5,7 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
 > MYSQL + Flask + OWASP Zed Attack Proxy
 
 ---
-
+[![PyPI version](https://badge.fury.io/py/owasp-zap-historic.svg)](https://badge.fury.io/py/owasp-zap-historic)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
 ![Open Source Love png1](https://badges.frapsoft.com/os/v1/open-source.png?v=103)
