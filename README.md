@@ -6,6 +6,7 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
 
 ---
 [![PyPI version](https://badge.fury.io/py/owasp-zap-historic.svg)](https://badge.fury.io/py/owasp-zap-historic)
+[![Downloads](https://pepy.tech/badge/owasp-zap-historic)](https://pepy.tech/project/owasp-zap-historic)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
 ![Open Source Love png1](https://badges.frapsoft.com/os/v1/open-source.png?v=103)
@@ -103,9 +104,10 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
        PRIMARY KEY (`id`)
        ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
-- __Step 6:__ Install owasp_zap_historic.py and owasp_zap_historic.bat
-    
-    More instructions later
+ - __Step 5:__ Install robotframework-historic-parser
+    ```
+    pip install owasp-zap-historic-parser
+    ```
     
 > _Note:_ All actions above are one time activities
 
@@ -115,6 +117,7 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
    To know more on available commands refer to cmd help
    ```
    owaspzaphistoric --help
+   owaspzaphistoricparser --help
    ```
    
 ---
@@ -160,6 +163,7 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
       - The data is pushed to the *TB_EXECUTION* and *TB_ALERTS* tables in MySQL in the project's db
       - The row for the project in *owaspzaphistoric.TB_PROJECT* is updated with recent data to display on the landing page
       - It looks for a previous row in *TB_EXECUTION* to compare results to and produces a delta report
+    - More information at [owasp-zap-historic-parser](https://github.com/Accruent/owasp-zap-historic-parser)
       
 - __Step 4:__ View results on the OZH app!
    - Click the *View* button for any project to view its dashboard
