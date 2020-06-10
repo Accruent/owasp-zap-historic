@@ -160,6 +160,7 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
       - The data is pushed to the *TB_EXECUTION* and *TB_ALERTS* tables in MySQL in the project's db
       - The row for the project in *owaspzaphistoric.TB_PROJECT* is updated with recent data to display on the landing page
       - It looks for a previous row in *TB_EXECUTION* to compare results to and produces a delta report
+      
 - __Step 4:__ View results on the OZH app!
    - Click the *View* button for any project to view its dashboard
    - From here, you can click the *Historic* tab to view all executions for a project

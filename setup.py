@@ -1,12 +1,17 @@
 """Setup file for owaspzaphistoric."""
 from setuptools import find_packages, setup
 
+
+with open("README.md", "r") as fh:
+    LONG_DESCRIPTION = fh.read()
+    print(LONG_DESCRIPTION)
+
+
 setup(
     name='owasp-zap-historic',
     version="0.1.0",
     description='Custom report to display owasp zap historical execution records',
-    long_description='OWASP ZAP Historic is custom report to display historical execution'
-                     ' records using MySQL + Flask',
+    long_description=LONG_DESCRIPTION,
     classifiers=[
         'Framework :: Robot Framework',
         'Programming Language :: Python',
