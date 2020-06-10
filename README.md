@@ -141,16 +141,16 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
 - __Step 3:__ Push data to OZH using owasp_zap_historic.py and owasp_zap_historic.bat
     - These were built with processing from Jenkins in mind. At Accruent, the OWASP ZAP job can be ran as a standalone job or as a child job. In Jenkins, the parameters that OZH needs are defaulted for the standalone job (environment, version)
     - The parameters that owaspzaphistoricparser expects from the CMD / bat file are:
-      -s --> mysql hosted machine ip address (default: localhost)
-      -t --> mysql port (default: 3306)
-      -u --> mysql user name (default: superuser)
-      -p --> mysql password (default: passw0rd)
-      -n --> project name in owasp zap historic
-      -e --> environment name (default: Not Provided)
-      -i --> type of scan (active, passive, etc) (default: Not Provided)
-      -l --> URL for published ZAP report (default: Not Provided)
-      -v --> version of application tested by ZAP (default: Not Provided)
-      -f --> filepath & report.html produced by ZAP
+      - s --> mysql hosted machine ip address (default: localhost)
+      - t --> mysql port (default: 3306)
+      - u --> mysql user name (default: superuser)
+      - p --> mysql password (default: passw0rd)
+      - n --> project name in owasp zap historic
+      - e --> environment name (default: Not Provided)
+      - i --> type of scan (active, passive, etc) (default: Not Provided)
+      - l --> URL for published ZAP report (default: Not Provided)
+      - v --> version of application tested by ZAP (default: Not Provided)
+      - f --> filepath & report.html produced by ZAP
     - In order to not store the production username/password in the repo, localhost entries are referenced in the repo. These can be hidden in the .bat file.
     - Example call from Jenkins:
     ```
