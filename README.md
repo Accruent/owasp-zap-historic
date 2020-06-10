@@ -63,6 +63,7 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
     ```
     pip install git+https://github.com/Accruent/owasp-zap-historic.git
     ```
+    
 - __Step 3:__ Create *owaspzaphistoric* default user with permissions - [guide](https://bit.ly/2PIOTfI)
 
 - __Step 4:__ Create *TB_PROJECT* table
@@ -152,6 +153,7 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
     ```
     email_body = bat returnStdout: true, script: """@cmd /c c://Jenkins/Scripts/owasp_zap_historic.bat "${html_file}" ${tag} ${targetURL.toUpperCase()} ${scan_type.toUpperCase()} "${url_link}" "${version}" """
     ```
+    
     - This returns the delta email body back to the email_body variable in Jenkins, which then emails the report to a recipient list.
     - Here is the basic process for owasp_zap_historic.py:
       - The ZAP file is scraped for alerts
