@@ -12,6 +12,7 @@ setup(
     version="0.1.0",
     description='Custom report to display owasp zap historical execution records',
     long_description=LONG_DESCRIPTION,
+    long_description_content_type='text/markdown',
     classifiers=[
         'Framework :: Robot Framework',
         'Programming Language :: Python',
