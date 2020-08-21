@@ -22,7 +22,5 @@ class TestFunctions(unittest.TestCase):
         """This test verifies that convert_utc_to_cst does not convert anything if the tuple
         does not contain a datetime object."""
         test_tuple = [("apple", 1.11, True), ("banana", 2.22, False)]
-        # expected_tuple = "[('apple', datetime.datetime(2020, 6, 4, 11, 14, 6," + \
-        #                  " tzinfo=<DstTzInfo 'US/Central' CDT-1 day, 19:00:00 DST>))]"
         result_tuple = convert_utc_to_cst(test_tuple)
         self.assertEqual(test_tuple, result_tuple)
