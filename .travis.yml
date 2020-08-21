@@ -24,7 +24,7 @@ before_script:
 - export DISPLAY=:99.0
 - sleep 3
 script:
-- pytest --cov src -v
+- pytest --cov owasp_zap_historic -v
 after_success:
 - coveralls
 #deploy:
