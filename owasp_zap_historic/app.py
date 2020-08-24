@@ -323,15 +323,15 @@ def use_db(db_name, use_dict=False):
     return cursor
 
 
-def sort_tests(data_list):
-    """Test sorting method."""
-    out = {}
-    for elem in data_list:
-        try:
-            out[elem[1]].extend(elem[2:])
-        except KeyError:
-            out[elem[1]] = list(elem)
-    return [tuple(values) for values in out.values()]
+# def sort_tests(data_list):
+#     """Test sorting method."""
+#     out = {}
+#     for elem in data_list:
+#         try:
+#             out[elem[1]].extend(elem[2:])
+#         except KeyError:
+#             out[elem[1]] = list(elem)
+#     return [tuple(values) for values in out.values()]
 
 
 def convert_utc_to_cst(items):
