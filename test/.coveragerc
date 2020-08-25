@@ -1,0 +1,9 @@
+[run]
+
+[paths]
+source = owasp_zap_historic/
+
+[report]
+exclude_lines =
+    if __name__ == .__main__.:
+    model.password =

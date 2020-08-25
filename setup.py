@@ -6,6 +6,8 @@ with open("README.md", "r") as fh:
     LONG_DESCRIPTION = fh.read()
     print(LONG_DESCRIPTION)
 
+with open('requirements.txt') as f:
+    REQUIREMENTS = f.read().splitlines()
 
 setup(
     name='owasp-zap-historic',
@@ -28,13 +30,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
 
-    install_requires=[
-        'config',
-        'flask',
-        'bcrypt',
-        'flask-mysqldb',
-        'pytz'
-    ],
+    install_requires=REQUIREMENTS,
     entry_points={
         'console_scripts': [
             'owaspzaphistoric=owasp_zap_historic.app:main',

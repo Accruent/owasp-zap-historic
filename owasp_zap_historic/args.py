@@ -11,6 +11,7 @@ def parse_options():
     general.add_argument(
         '-s', '--sqlhost',
         dest='sqlhost',
+        # default='192.168.86.248',
         default='localhost',
         help="MySQL database host address"
     )
