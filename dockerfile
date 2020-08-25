@@ -20,5 +20,6 @@ RUN pytest --cov owasp_zap_historic --cov-report term-missing --cov-config=test/
 # Run the owasp-zap-historic flask with argument to connect to db
 # Below command is to run in docker container pointed to local mysql
 # CMD owaspzaphistoric -s '192.168.86.248'
+# Then in CMD window docker run -p 5000:5000 owaspzaphistoric
 # Below command is to run on Rancher and connect to mysql db shared with RFH
 CMD owaspzaphistoric -s "${SQLHOST}" -t "${PORT}" -u "${USERNAME}" -p "${PASSWORD}" -a "${FLASKHOST}"

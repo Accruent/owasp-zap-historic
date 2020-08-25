@@ -1,5 +1,6 @@
 """Setup file for owaspzaphistoric."""
 from setuptools import find_packages, setup
+import version
 
 
 with open("README.md", "r") as fh:
@@ -11,7 +12,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='owasp-zap-historic',
-    version="0.1.1",
+    version=version.VERSION,
     description='Custom report to display owasp zap historical execution records',
     long_description=LONG_DESCRIPTION,
     long_description_content_type='text/markdown',
