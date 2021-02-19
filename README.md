@@ -6,6 +6,7 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
 
 ---
 [![PyPI version](https://badge.fury.io/py/owasp-zap-historic.svg)](https://badge.fury.io/py/owasp-zap-historic)
+[![tests](https://github.com/Accruent/owasp-zap-historic/actions/workflows/run-tests.yml/badge.svg?branch=master)](https://github.com/Accruent/owasp-zap-historic/actions/workflows/run-tests.yml)
 [![Downloads](https://pepy.tech/badge/owasp-zap-historic)](https://pepy.tech/project/owasp-zap-historic)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
