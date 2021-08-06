@@ -111,15 +111,15 @@ def add_db():
                 "INSERT INTO owaspzaphistoric.TB_PROJECT ( Project_Id, Project_Name, Project_Desc, "
                 "Project_Image, Environment, Scan_Type, Created_Date, Last_Updated, "
                 "Total_Executions, Recent_High, Recent_Medium, Recent_Low, Recent_Informational, "
-                "Version) VALUES (0, '%s', '%s', '%s', 0, 0, NOW(), NOW(), 0, 0, 0, 0, 0, 0);" %
-                (db_name, db_desc, db_image))
+                "Recent_False, Version) VALUES (0, '%s', '%s', '%s', 0, 0, NOW(), NOW(), 0, 0, 0, "
+                "0, 0, 0, 0);" % (db_name, db_desc, db_image))
             # create tables in created database
             cursor = use_db(db_name)
             cursor.execute(
                 "Create table TB_EXECUTION ( Execution_Id INT NOT NULL auto_increment primary key, "
                 "Environment TEXT, Scan_Type TEXT, Execution_Date DATETIME, High_Alerts INT, "
-                "Medium_Alerts INT, Low_ALerts INT, Informational_Alerts INT, URL_Link TEXT, "
-                "Version TEXT);")
+                "Medium_Alerts INT, Low_ALerts INT, Informational_Alerts INT, False_Alerts INT, "
+                "URL_Link TEXT, Version TEXT);")
             cursor.execute(
                 "Create table TB_ALERTS ( Alert_Id INT NOT NULL auto_increment primary key, "
                 "Execution_Id INT, Alert_Level TEXT, Alert_Type TEXT, URLS_Affected INT);")
