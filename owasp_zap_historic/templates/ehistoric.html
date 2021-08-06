@@ -103,6 +103,7 @@
                     <th>Medium Alerts</th>
                     <th>Low Alerts</th>
                     <th>Informational Alerts</th>
+                    <th>False Positives</th>
                     <th>ZAP Report Link</th>
                     <th>Alerts | Delete</th>
                 </tr>
@@ -123,6 +124,7 @@
                         <td> {{item[5]}}</td>
                         <td> {{item[6]}}</td>
                         <td> {{item[7]}}</td>
+                        <td> {{item[8]}}</td>
                         {% if session['name'] %}
                         <td style="color: green"> <a href="{{item[8]}}" target="_blank" rel="noopener noreferrer">View</a></td>
                         <td> <a href="./alerts/{{item[0]}}" target="_blank"> View</a> |<a href="./deleconf/{{item[0]}}"> Delete</a></td>
