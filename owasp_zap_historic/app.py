@@ -219,6 +219,25 @@ def dashboard(db):
             "Execution_Id) as custom2;")
         info_urls_data = cursor.fetchall()
 
+        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected),0) from TB_ALERTS where "
+                       "Alert_Level = 'False Positive' and Execution_Id in (select MAX(Execution_Id)"
+                       " from TB_EXECUTION);")
+        false_last_exe_data = cursor.fetchall()
+
+        cursor.execute(
+            "select round(min(Alerts)), round(avg(Alerts),2), max(Alerts) from "
+            "(select False_Alerts as Alerts from TB_EXECUTION group by execution_id)"
+            " as custom;")
+        false_overall_data = cursor.fetchall()
+
+        cursor.execute(
+            "select min(URLS), round(avg(URLS),2), max(URLS) from (select "
+            "Execution_ID, sum(Total) as URLS from (select Execution_Id, sum(URLS_Affected) "
+            "'Total' from TB_ALERTS where Alert_Level = 'False Positive' group by Execution_Id "
+            "UNION (SELECT Execution_Id,  0 'TOTAL' from TB_ALERTS)) as custom group by "
+            "Execution_Id) as custom2;")
+        false_urls_data = cursor.fetchall()
+
         return render_template('dashboard.html', high_last_exe_data=high_last_exe_data,
                                high_overall_data=high_overall_data,
                                high_urls_data=high_urls_data,
@@ -231,6 +250,9 @@ def dashboard(db):
                                info_last_exe_data=info_last_exe_data,
                                info_overall_data=info_overall_data,
                                info_urls_data=info_urls_data,
+                               false_last_exe_data=false_last_exe_data,
+                               false_overall_data=false_overall_data,
+                               false_urls_data=false_urls_data,
                                results_data=results_data,
                                db_name=db)
 
