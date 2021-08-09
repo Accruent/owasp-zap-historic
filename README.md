@@ -87,6 +87,7 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
        `Recent_Medium` int(11) DEFAULT NULL,
        `Recent_Low` int(11) DEFAULT NULL,
        `Recent_Informational` int(11) DEFAULT NULL,
+       `Recent_False` int(11) DEFAULT NULL,
        `Version` varchar(50) DEFAULT 'Not Captured',
        PRIMARY KEY (`Project_Id`)
        ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
