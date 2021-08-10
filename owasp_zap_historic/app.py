@@ -111,15 +111,15 @@ def add_db():
                 "INSERT INTO owaspzaphistoric.TB_PROJECT ( Project_Id, Project_Name, Project_Desc, "
                 "Project_Image, Environment, Scan_Type, Created_Date, Last_Updated, "
                 "Total_Executions, Recent_High, Recent_Medium, Recent_Low, Recent_Informational, "
-                "Version) VALUES (0, '%s', '%s', '%s', 0, 0, NOW(), NOW(), 0, 0, 0, 0, 0, 0);" %
-                (db_name, db_desc, db_image))
+                "Recent_False, Version) VALUES (0, '%s', '%s', '%s', 0, 0, NOW(), NOW(), 0, 0, 0, "
+                "0, 0, 0, 0);" % (db_name, db_desc, db_image))
             # create tables in created database
             cursor = use_db(db_name)
             cursor.execute(
                 "Create table TB_EXECUTION ( Execution_Id INT NOT NULL auto_increment primary key, "
                 "Environment TEXT, Scan_Type TEXT, Execution_Date DATETIME, High_Alerts INT, "
-                "Medium_Alerts INT, Low_ALerts INT, Informational_Alerts INT, URL_Link TEXT, "
-                "Version TEXT);")
+                "Medium_Alerts INT, Low_ALerts INT, Informational_Alerts INT, False_Alerts INT, "
+                "URL_Link TEXT, Version TEXT);")
             cursor.execute(
                 "Create table TB_ALERTS ( Alert_Id INT NOT NULL auto_increment primary key, "
                 "Execution_Id INT, Alert_Level TEXT, Alert_Type TEXT, URLS_Affected INT);")
@@ -219,6 +219,25 @@ def dashboard(db):
             "Execution_Id) as custom2;")
         info_urls_data = cursor.fetchall()
 
+        cursor.execute("select COUNT(*), ifnull(SUM(URLS_Affected),0) from TB_ALERTS where "
+                       "Alert_Level = 'False Positive' and Execution_Id in (select MAX(Execution_Id)"
+                       " from TB_EXECUTION);")
+        false_last_exe_data = cursor.fetchall()
+
+        cursor.execute(
+            "select round(min(Alerts)), round(avg(Alerts),2), max(Alerts) from "
+            "(select False_Alerts as Alerts from TB_EXECUTION group by execution_id)"
+            " as custom;")
+        false_overall_data = cursor.fetchall()
+
+        cursor.execute(
+            "select min(URLS), round(avg(URLS),2), max(URLS) from (select "
+            "Execution_ID, sum(Total) as URLS from (select Execution_Id, sum(URLS_Affected) "
+            "'Total' from TB_ALERTS where Alert_Level = 'False Positive' group by Execution_Id "
+            "UNION (SELECT Execution_Id,  0 'TOTAL' from TB_ALERTS)) as custom group by "
+            "Execution_Id) as custom2;")
+        false_urls_data = cursor.fetchall()
+
         return render_template('dashboard.html', high_last_exe_data=high_last_exe_data,
                                high_overall_data=high_overall_data,
                                high_urls_data=high_urls_data,
@@ -231,6 +250,9 @@ def dashboard(db):
                                info_last_exe_data=info_last_exe_data,
                                info_overall_data=info_overall_data,
                                info_urls_data=info_urls_data,
+                               false_last_exe_data=false_last_exe_data,
+                               false_overall_data=false_overall_data,
+                               false_urls_data=false_urls_data,
                                results_data=results_data,
                                db_name=db)
 
@@ -321,17 +343,6 @@ def use_db(db_name, use_dict=False):
         cursor = mysql.connection.cursor()
     cursor.execute("USE %s;" % db_name)
     return cursor
-
-
-# def sort_tests(data_list):
-#     """Test sorting method."""
-#     out = {}
-#     for elem in data_list:
-#         try:
-#             out[elem[1]].extend(elem[2:])
-#         except KeyError:
-#             out[elem[1]] = list(elem)
-#     return [tuple(values) for values in out.values()]
 
 
 def convert_utc_to_cst(items):
