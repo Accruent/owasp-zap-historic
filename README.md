@@ -13,6 +13,16 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
 ![Open Source Love png1](https://badges.frapsoft.com/os/v1/open-source.png?v=103)
 [![HitCount](http://hits.dwyl.com/neiljhowell/Accruent/owasp-zap-historic.svg)](http://hits.dwyl.com/neiljhowell/Accruent/owasp-zap-historic)
 
+## UPDATE Release 0.2.0
+This release incorporates False Positives from the newer ZAP reports into the application. If you are an existing user
+user of owaspzap-historic, you will need to make the following changes to your MySQL database:
+- The following script will need to be ran on your TB_PROJECT table:
+> ALTER TABLE owaspzaphistoric.TB_PROJECT ADD COLUMN Recent_False INT 
+> NULL DEFAULT 0 AFTER Recent_Informational;
+- The following script will need to be ran on any project's TB_EXECUTION table:
+> ALTER TABLE [project_name].TB_EXECUTION ADD COLUMN False_Alerts INT NULL DEFAULT 0 
+> AFTER Informational_Alerts;
+
 ## OZH Overview
 
 > <img src="https://i.ibb.co/tpC4snT/2020-06-05-08-18-39.png" alt="Overview">
