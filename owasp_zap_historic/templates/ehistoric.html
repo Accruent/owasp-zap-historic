@@ -117,7 +117,7 @@
                         <td> {{item[0]}}</td>
                         {% endif %}
                         <td> {{item[1]}}</td>
-                        <td> {{item[9]}}</td>
+                        <td> {{item[10]}}</td>
                         <td> {{item[2]}}</td>
                         <td> {{item[3].strftime('%b %d %Y %I:%M %p %Z')}}</td>
                         <td> {{item[4]}}</td>
@@ -126,7 +126,7 @@
                         <td> {{item[7]}}</td>
                         <td> {{item[8]}}</td>
                         {% if session['name'] %}
-                        <td style="color: green"> <a href="{{item[8]}}" target="_blank" rel="noopener noreferrer">View</a></td>
+                        <td style="color: green"> <a href="{{item[9]}}" target="_blank" rel="noopener noreferrer">View</a></td>
                         <td> <a href="./alerts/{{item[0]}}" target="_blank"> View</a> |<a href="./deleconf/{{item[0]}}"> Delete</a></td>
                         {% else %}
                         <td style="color: green"> <a href="../login">Login to see ZAP Report</a></td>
