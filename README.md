@@ -14,6 +14,8 @@ OWASP-ZAP-Historic (OZH) is a free, custom html report which provides historical
 [![HitCount](http://hits.dwyl.com/neiljhowell/Accruent/owasp-zap-historic.svg)](http://hits.dwyl.com/neiljhowell/Accruent/owasp-zap-historic)
 [![BCH compliance](https://bettercodehub.com/edge/badge/Accruent/owasp-zap-historic?branch=master)](https://bettercodehub.com/)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/Accruent/owasp-zap-historic.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Accruent/owasp-zap-historic/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/Accruent/owasp-zap-historic.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Accruent/owasp-zap-historic/context:javascript)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/Accruent/owasp-zap-historic.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Accruent/owasp-zap-historic/context:python)
 
 ## UPDATE Release 0.2.0
 This release incorporates False Positives from the newer ZAP reports into the application. If you are an existing user
