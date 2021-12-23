@@ -57,7 +57,7 @@ user of owaspzap-historic, you will need to make the following changes to your M
 
 ## Requirements
 
-- Python 3.6
+- Python 3.9
 - MySQL DB
 
 ## Installation
