@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.10.0b2
 
 # Copy the current directory contents into the container at /app
 COPY . /app
