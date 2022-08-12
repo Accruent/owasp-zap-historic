@@ -1,5 +1,5 @@
 bcrypt~=3.2.0
-pytz~=2022.1
+pytz~=2022.2
 Flask~=2.0.2
 setuptools~=63.4.1
 pytest-cov~=3.0.0
