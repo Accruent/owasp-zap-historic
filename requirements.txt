@@ -1,4 +1,4 @@
-bcrypt~=3.2.0
+bcrypt~=4.0.0
 pytz~=2022.1
 Flask~=2.0.2
 setuptools~=63.4.1
