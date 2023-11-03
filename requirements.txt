@@ -5,3 +5,4 @@ setuptools~=65.5.1
 pytest-cov~=3.0.0
 flask_mysqldb~=0.2.0
 config~=0.5.1
+werkzeug>=3.0.1 # not directly required, pinned by Snyk to avoid a vulnerability
