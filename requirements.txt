@@ -5,4 +5,4 @@ pytest-cov~=4.0.0
 setuptools~=67.6.0
 flask_mysqldb~=0.2.0
 config~=0.5.1
-Werkzeug==2.2.2
+Werkzeug==2.3.8
