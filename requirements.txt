@@ -1,4 +1,4 @@
-bcrypt~=4.2.1
+bcrypt~=4.3.0
 pytz~=2025.1
 Flask~=3.1.0
 pytest-cov~=6.0.0
