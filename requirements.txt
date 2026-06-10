@@ -1,6 +1,6 @@
 bcrypt~=5.0.0
 pytz~=2026.2
-Flask~=3.1.2
+Flask~=3.1.3
 pytest-cov~=7.1.0
 setuptools~=82.0.1
 flask_mysqldb~=2.0.0
